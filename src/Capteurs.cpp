@@ -6,7 +6,7 @@
 // Suiveur de ligne
 int seuilGauche = 800;
 int seuilCentre = 800;
-int seuilDroite = 800;
+int seuilDroite = 800; 
 
 // Capteur de couleur
 Adafruit_TCS34725 tcs = Adafruit_TCS34725(TCS34725_INTEGRATIONTIME_101MS, TCS34725_GAIN_4X); // Définit capteur et caractéristiques d'utilisation
