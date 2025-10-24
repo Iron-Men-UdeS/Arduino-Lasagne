@@ -10,8 +10,22 @@ int seuilDroite = 800;
 //Capteur distance
 float detecDistance(int pin){
   int voltage = analogRead(pin);
-  voltage= (double) voltage;
-  return (float) (29.988*pow(voltage, -1.173));
+  for (int i=1;i<=7;i++){
+    voltage+=analogRead(pin);
+  }
+  voltage= ((double) voltage)/8;
+  return corr(pin,(float) (14994*pow(voltage, -1.173)));
+}
+float corr(int pin, float valeurCapteur){
+  if (pin==DISTANCE1){
+    return (valeurCapteur+2.22)/1.272;
+  }
+  else if(pin==DISTANCE2){
+    return (valeurCapteur+4.3587)/1.3894;
+  }
+  else{
+    return 0;
+  }
 }
 float detecDistanceLin(int pin){
   int intervale=-1;
@@ -24,6 +38,12 @@ float detecDistanceLin(int pin){
     }
   }
   return (((ypoints[intervale+1]-ypoints[intervale])/5)*(voltage-xpoints[intervale]))+ypoints[intervale];
+}
+float detecDistanceCor(int pin){
+  int voltage = analogRead(pin);
+  voltage= (double) voltage;
+  float corr=1;
+  return (float) (29.988*pow(voltage, -1.173))*(corr);
 }
 
 /*******************************************************************************************

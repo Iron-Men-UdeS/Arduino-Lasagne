@@ -37,6 +37,8 @@ Fonctions de boucle infini (loop())
 
 void loop() 
 {
+  delay(1000);
+  Serial.println(detecDistance(DISTANCE1));
 }
 
 // void setup() 
