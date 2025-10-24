@@ -9,9 +9,9 @@
 #define CASE 50.0
 
 //PID
-#define KP 1.0
+#define KP 0.00003
 #define KI 0.0
-#define KD 0.0
+#define KD 0.00002
 
 //Autre
 #define GAUCHE false
@@ -25,6 +25,8 @@ double calculVitesse(float maxSpeed, uint32_t position, uint32_t positionFinal);
 double pid(float error, float &lastError);
 bool mur();
 void robotSetSpeed(float vitesse, int direction ,float &correction);
+void avance(int distanceCM, float vitesse);
+void tourne(int angleDeg, float vitesse, bool direction);
 
 #endif 
 
