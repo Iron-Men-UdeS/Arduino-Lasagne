@@ -8,6 +8,14 @@ int seuilGauche = 800;
 int seuilCentre = 800;
 int seuilDroite = 800;
 //Capteur distance
+/*******************************************************************************************
+ * Auteur : Justin
+ * lit un capteur de distance, traduit les lectures 
+ * en distance (cm) 
+ * note: très précis de 10-40 cm, moins précis de 40-80, inutilisable en dessous de 10
+ * arguments: la pin du capteur à lire
+ * @return la distance en cm
+ ******************************************************************************************/
 float detecDistance(int pin){
   int voltage = analogRead(pin);
   for (int i=1;i<=7;i++){
@@ -16,6 +24,13 @@ float detecDistance(int pin){
   voltage= ((double) voltage)/8;
   return corr(pin,(float) (14994*pow(voltage, -1.173)));
 }
+/*******************************************************************************************
+ * Auteur : Justin
+ * corrige la valeur du capteur de distancce selon la 
+ * fonction invverse obtenue dans les tests d'étalonnage
+ * arguments: la pin du capteur dont proviennent les données, la valeur non corrigée (cm)
+ * @return la distance, corrigée, en cm
+ ******************************************************************************************/
 float corr(int pin, float valeurCapteur){
   if (pin==DISTANCE1){
     return (valeurCapteur+2.22)/1.272;
@@ -26,24 +41,6 @@ float corr(int pin, float valeurCapteur){
   else{
     return 0;
   }
-}
-float detecDistanceLin(int pin){
-  int intervale=-1;
-  float voltage = (float) analogRead(pin);
-  float xpoints[16] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
-  float ypoints[16] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
-  for (int i=0;i<=15;i++){
-    if (voltage>xpoints[i]){
-      intervale++;
-    }
-  }
-  return (((ypoints[intervale+1]-ypoints[intervale])/5)*(voltage-xpoints[intervale]))+ypoints[intervale];
-}
-float detecDistanceCor(int pin){
-  int voltage = analogRead(pin);
-  voltage= (double) voltage;
-  float corr=1;
-  return (float) (29.988*pow(voltage, -1.173))*(corr);
 }
 
 /*******************************************************************************************
