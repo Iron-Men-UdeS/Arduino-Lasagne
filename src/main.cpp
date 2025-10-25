@@ -39,7 +39,8 @@ Fonctions de boucle infini (loop())
 int currentMillis = 0;
 void loop() 
 {
-  // robotSetSpeed(0.5,0,corr);
+  robotSetSpeed(0.2,-1,corr);
+  Serial.println(corr);
 
   // int gauche = ENCODER_Read(0);
   // int droit = ENCODER_Read(1);
@@ -49,11 +50,11 @@ void loop()
   // Serial.println("");
   // Serial.println("avance");
 
-  avance(50,0.7);
+  //avance(50,0.7);
   
-  delay(1000);
-  tourne(180 ,0.3,GAUCHE);
-  delay(1000);
+  // tourne(QUART_DE_TOUR ,0.3,GAUCHE);
+  // delay(1000);
+  // delay(1000);
 
   
 }

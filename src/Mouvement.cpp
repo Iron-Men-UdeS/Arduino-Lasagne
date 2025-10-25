@@ -17,7 +17,7 @@
  ******************************************************************************************/
 uint32_t distanceEnco(float distanceCM)
 {
-    uint32_t val = (TOUR_COMPLET / CIRCON_ROUE_CM) * distanceCM;
+    uint32_t val = (TOUR_COMPLET_ENCO / CIRCON_ROUE_CM) * distanceCM;
     return val;
 }
 
@@ -35,11 +35,11 @@ uint32_t distanceEnco(float distanceCM)
  * @param angleDEG (integer) angle de rotation en degré
  * @return (integer 32 bits non-signé) rotation en tick d'encodeur
  ******************************************************************************************/
-uint32_t angleEnco(int angleDeg)
+uint32_t angleEnco(float angleDeg)
 {
     float rad = radians(angleDeg);
     float deplacementCM = (rad * (19 / 2));
-    return round((TOUR_COMPLET * deplacementCM) / CIRCON_ROUE_CM);
+    return round((TOUR_COMPLET_ENCO * deplacementCM) / CIRCON_ROUE_CM);
 }
 
 /*******************************************************************************************
@@ -137,7 +137,7 @@ double pid(float error, float &lastError)
     static double difTemps = 0;
 
     difTemps = (millis() - lastMillis)/1000;
-    //difTemps <= 0? difTemps = 0.000001:difTemps = difTemps;
+    difTemps <= 0? difTemps = 0.000001:difTemps = difTemps;
     lastMillis = millis();
     double proportional = error;
     integral += error * difTemps;
@@ -186,8 +186,8 @@ void robotSetSpeed(float vitesse, int direction, float &correction)
         break;
     }
 
-    float setPoint = ENCODER_Read(GAUCHE);
-    float mesure = ENCODER_Read(DROITE);
+    float setPoint = abs(ENCODER_Read(GAUCHE));
+    float mesure = abs(ENCODER_Read(DROITE));
     float error = setPoint - mesure;
     static float previousError = 0;
     correction = correction + pid(error, previousError);
@@ -237,7 +237,7 @@ void avance(int distanceCM, float vitesse){
 
 
 
-void tourne(int angleDeg, float vitesse, bool direction){
+void tourne(float angleDeg, float vitesse, bool direction){
   ENCODER_Reset(0);
   ENCODER_Reset(1);
   MOTOR_SetSpeed(0,0);
