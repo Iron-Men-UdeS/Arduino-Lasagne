@@ -3,13 +3,14 @@
 #include <LibRobus.h>
 #include <Arduino.h>
 #include <Wire.h>
+#include <math.h>
 #include "Adafruit_TCS34725.h"
 #include "LibRobus.h"
 // Defines
 
 //Suiveur de ligne
-#define CAPTEUR0_GAUCHE A0
-#define CAPTEUR0_CENTRE A1
+#define CAPTEUR0_GAUCHE A0// TODO utiliser pour AMBIENT
+#define CAPTEUR0_CENTRE A1// TODO utiliser pour 5kHz
 #define CAPTEUR0_DROITE A2
 #define CAPTEUR1_GAUCHE A3
 #define CAPTEUR1_CENTRE A4
@@ -35,6 +36,9 @@
 #define BRUIT_AMBIENT A0
 #define SIGNAL_5kHz A1
 
+//Capteur de distance
+#define DISTANCE1 A8
+#define DISTANCE2 3
 // Variables
 
 
@@ -50,5 +54,8 @@ void inverseDEL(int pin);
 void eteindreToutesLesDELs(void);
 bool mur();
 bool sifflet_5kHz();
-
+float detecDistance(int pin);
+float detecDistanceLin(int pin);
+float corrDist(int pin, float valeurCapteur);
+float calibreSuiveur(int pin);
 #endif
