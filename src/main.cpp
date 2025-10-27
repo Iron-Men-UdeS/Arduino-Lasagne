@@ -28,6 +28,12 @@ void setup()
   pinMode(LED_VERTE, OUTPUT);
   pinMode(LED_JAUNE, OUTPUT);
   pinMode(LED_BLEUE, OUTPUT);
+  SERVO_Enable(0);
+  SERVO_Enable(1);
+  eteindreToutesLesDELs();
+  initCapteurCouleur();
+  rouge();
+  
 }
   
 
@@ -36,27 +42,37 @@ void setup()
 Fonctions de boucle infini (loop())
 **************************************************************************** */
 // -> Se fait appeler perpetuellement suite au "setup"
-int currentMillis = 0;
-void loop() 
-{
+void loop() {
 
-  changeRobot(0);
-  delay(30000000);
-  // int gauche = ENCODER_Read(0);
-  // int droit = ENCODER_Read(1);
-  // Serial.println("encodeur gauche : " + String(gauche));
-  // Serial.println("encodeur droit : " + String(droit));
-  // Serial.println("différence : " + String(gauche - droit));
-  // Serial.println("");
-  // Serial.println("avance");
 
-  //avance(50,0.7);
-  
-  // tourne(QUART_DE_TOUR ,0.3,GAUCHE);
-  // delay(1000);
-  // delay(1000);
 
-  
+
+  // int couleur=suivreLigne();
+  // switch (couleur){
+  //   case couleurRouge:
+  //   inverseDEL(LED_ROUGE);
+  //   rouge();
+  //   inverseDEL(LED_ROUGE);
+  //   break;
+
+  //   case couleurVert:
+  //   inverseDEL(LED_VERTE);
+  //   vert();
+  //   inverseDEL(LED_VERTE);
+  //   break;
+
+  //   case couleurBleu:
+  //   inverseDEL(LED_BLEUE);
+  //   bleu();
+  //   inverseDEL(LED_BLEUE);
+  //   break;
+
+  //   case couleurJaune:
+  //   inverseDEL(LED_JAUNE);
+  //   jaune();
+  //   inverseDEL(LED_JAUNE);
+  //   break;
+  // }
 }
 
 // void setup() 
