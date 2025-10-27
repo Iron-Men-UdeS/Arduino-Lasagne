@@ -12,7 +12,7 @@ Inclure les librairies de functions que vous voulez utiliser
 
 #include "main.h"
 
-float corr;
+//float corr;
 
 /* ****************************************************************************
 Fonctions d'initialisation (setup)
@@ -39,9 +39,9 @@ Fonctions de boucle infini (loop())
 int currentMillis = 0;
 void loop() 
 {
-  robotSetSpeed(0.2,-1,corr);
-  Serial.println(corr);
 
+  changeRobot(0);
+  delay(30000000);
   // int gauche = ENCODER_Read(0);
   // int droit = ENCODER_Read(1);
   // Serial.println("encodeur gauche : " + String(gauche));

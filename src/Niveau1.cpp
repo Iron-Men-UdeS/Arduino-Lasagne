@@ -94,7 +94,7 @@ void rouge() {
   // --- Paramètres ---
   const float DISTANCE_MAX = 25.0;   // Rayon de détection (cm)
   const float DISTANCE_MIN = 5.0;    // Distance minimale à ignorer (cm)
-  const float PAS_ROTATION = 10.0;   // Angle d'incrémentation du balayage (°)
+  const float PAS_ROTATION = 5.0;   // Angle d'incrémentation du balayage (°)
   const float VITESSE = 0.4;         // Vitesse pour les déplacements
 
   bool quilleDetectee = false;
@@ -108,9 +108,8 @@ void rouge() {
     // Tourne par petits pas
     tourne(PAS_ROTATION, VITESSE_MOTEUR, DROITE);
     delay(300);
-
     // Lecture de la distance mesurée par le capteur avant
-    distanceLue = detecDistance(DISTANCE1);
+    distanceLue = detecDistance(DISTANCEA);
 
     // Vérifie si on détecte un objet dans la zone utile
     if (distanceLue <= DISTANCE_MAX && distanceLue > DISTANCE_MIN) {
@@ -135,7 +134,7 @@ void rouge() {
   delay(500);
 
   // --- 4. Fait un 180 ---
-  tourne(180, VITESSE_MOTEUR, DROITE);
+  tourne(2*QUART_DE_TOUR, VITESSE_MOTEUR, DROITE);
   delay(300);
 
   // --- 5. Avance pour revenir à la ligne ---
@@ -143,7 +142,8 @@ void rouge() {
   delay(500);
 
   // --- 6. Se remettre droit (revenir à orientation initiale) ---
-  tourne(180-angleDetection, VITESSE_MOTEUR, DROITE);
+  Serial.println(angleDetection);
+  tourne(angleDetection, VITESSE_MOTEUR, GAUCHE);
   delay(300);
 }
 
@@ -160,15 +160,15 @@ void changeRobot(int direction) {
     //passe en haut ou bas si le rob ot passe en bas, fonction renvoie rien.
 
     if (direction == 0) { //techniquement le premier mouv qui va en bas puis a gauche
-        tourne(180, VITESSE_MOTEUR, DROITE);
+        tourne(2*QUART_DE_TOUR, VITESSE_MOTEUR, DROITE);
         delay(TIME);
         avance(20, VITESSE_MOTEUR);
         delay(TIME);
-        tourne(90, VITESSE_MOTEUR, DROITE);
+        tourne(QUART_DE_TOUR, VITESSE_MOTEUR, DROITE);
         delay(TIME);
         avance(80, VITESSE_MOTEUR);
         delay(TIME);
-        tourne(90, VITESSE_MOTEUR, DROITE);
+        tourne(QUART_DE_TOUR, VITESSE_MOTEUR, DROITE);
         delay(TIME);
         avance(20, VITESSE_MOTEUR);
     }
@@ -176,14 +176,14 @@ void changeRobot(int direction) {
     if (direction == 1) { //techniquement le deuxieme mouv qui va en haut puis a droite
         avance(20, VITESSE_MOTEUR);
         delay(TIME);
-        tourne(90, VITESSE_MOTEUR, DROITE);
+        tourne(QUART_DE_TOUR, VITESSE_MOTEUR, DROITE);
         delay(TIME);
         avance(80, VITESSE_MOTEUR);
         delay(TIME);
-        tourne(90, VITESSE_MOTEUR, DROITE);
+        tourne(QUART_DE_TOUR, VITESSE_MOTEUR, DROITE);
         delay(TIME);
         avance(20, VITESSE_MOTEUR);
         delay(TIME);
-        tourne(180, VITESSE_MOTEUR, DROITE);
+        tourne(2*QUART_DE_TOUR, VITESSE_MOTEUR, DROITE);
     }
 }
