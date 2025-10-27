@@ -9,8 +9,8 @@
 // Defines
 #define INTERVALLE 100
 #define VITESSE_MOTEUR 0.5
+#define TIME 3000
 // Variables externe
-
 
 // //Prototypes de fonctions
 int suivreLigne(void);
