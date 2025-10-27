@@ -11,8 +11,8 @@
 #define HAUT 3
 #define BAS 4
 #define AUCUN -1
-#define BRAS_DROITE
-#define BRAS_GAUCHE 
+#define BRAS_DROIT 1
+#define BRAS_GAUCHE 0
 // Variables externe
 
 

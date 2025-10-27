@@ -26,6 +26,8 @@ void setup()
   pinMode(LED_VERTE, OUTPUT);
   pinMode(LED_JAUNE, OUTPUT);
   pinMode(LED_BLEUE, OUTPUT);
+  SERVO_Enable(0);
+  SERVO_Enable(1);
 }
   
 
@@ -37,6 +39,8 @@ Fonctions de boucle infini (loop())
 
 void loop() 
 {
+SERVO_SetAngle(1,0);
+SERVO_SetAngle(0,180);
 }
 
 // void setup() 

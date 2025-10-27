@@ -99,17 +99,17 @@ void bleu(){
     tourne(45,0.5,GAUCHE); //redressi le robot pour qu'il soit dans la même direction que au départ de la fonciton
 
     //Les servomoteur sont activés pour être utiliser lors de la dance=============point pour le style;) 
-    SERVO_Enable(0);
-    SERVO_Enable(1);
-    // fais bouger un bras a 90 et lautre a 45 et ensuite les remets a leur place
-    SERVO_SetAngle(0,45);
-    SERVO_SetAngle(0,90)
+    // SERVO_Enable(0);
+    // SERVO_Enable(1);
+    // // fais bouger un bras a 90 et lautre a 45 et ensuite les remets a leur place
+    // SERVO_SetAngle(0,45);
+    // SERVO_SetAngle(0,90)
 
-    SERVO_SetAngle(0,0);
-    SERVO_SetAngle(0,0);
-    //desactive les servomoteur
-    SERVO_Disable(0);
-    SERVO_Disable(1);
+    // SERVO_SetAngle(0,0);
+    // SERVO_SetAngle(0,0);
+    // //desactive les servomoteur
+    // SERVO_Disable(0);
+    // SERVO_Disable(1);
 }
 
 
@@ -124,12 +124,12 @@ void vert(){
 }
 
 //amelioration possible faire un while jusqua ce que le suiveur de ligne renvoie un info pour dire qu,il troiver la ligne
-void vertV2(){
-    //Avance en ligne droite jusque une ligne soit detecter
-    while(dectionLigne different du resultat qui est renvoyer lorsque la ligne est detecter){
-        robotSetSpeed(0.8,0)
-    }
-}
+// void vertV2(){
+//     //Avance en ligne droite jusque une ligne soit detecter
+//     while(dectionLigne different du resultat qui est renvoyer lorsque la ligne est detecter){
+//         robotSetSpeed(0.8,0)
+//     }
+// }
 
 
 /*******************************************************************************************
@@ -139,11 +139,10 @@ void vertV2(){
  * 
  * @param position AUCUN, AVANT, ARRIERE, HAUT, BAS
  * 
+ * 
  ******************************************************************************************/
 void bougeBrasDroit(int position){
     //enable juste celui a droite
-    SERVO_Enable(0);
-    SERVO_Enable(1);
     switch(position){
         //Ne donne aucune instruction donc les servos ne bouge pas
         case AUCUN:
@@ -151,24 +150,21 @@ void bougeBrasDroit(int position){
 
         //Met les bras vers l'avant du robot
         case AVANT:
-        SERVO_SetAngle(DROITE, voir angle au repos);
+        SERVO_SetAngle(BRAS_DROIT, 90);
         break;
         //Met les bras vers l'arrière du robot
         case ARRIERE:
-        SERVO_SetAngle(DROITE, voir angle au repos);
+        SERVO_SetAngle(BRAS_DROIT, voir angle au repos);
         break;
         //Met les bras vers le haut du robot
         case HAUT:
-        SERVO_SetAngle(DROITE, voir angle au repos);
+        SERVO_SetAngle(BRAS_DROIT, 180);
         break;
         //Met les bras vers le bas du robot
         case BAS:
-        SERVO_SetAngle(DROITE, voir angle au repos);
+        SERVO_SetAngle(BRAS_DROIT, 0);
         break;
     }
-    //disable juste lui utiliser
-    SERVO_Disable(0);
-    SERVO_Disable(1);
 }
 
 
@@ -182,8 +178,6 @@ void bougeBrasDroit(int position){
  ******************************************************************************************/
 void bougeBrasGauche(int position){
     //enable juste celui utiliser a gauche
-    SERVO_Enable(0);
-    SERVO_Enable(1);
     switch(position){
         //Ne donne aucune instruction donc les servos ne bouge pas
         case AUCUN:
@@ -191,24 +185,21 @@ void bougeBrasGauche(int position){
         
         //Met les bras vers l'avant du robot
         case AVANT:
-        SERVO_SetAngle(GAUCHE, voir angle au repos);
+        SERVO_SetAngle(BRAS_GAUCHE, 90);
         break;
         //Met les bras vers l'arrière du robot
         case ARRIERE:
-        SERVO_SetAngle(GAUCHE, voir angle au repos);
+        SERVO_SetAngle(BRAS_GAUCHE, voir angle au repos);
         break;
         //Met les bras vers le haut du robot
         case HAUT:
-        SERVO_SetAngle(GAUCHE, voir angle au repos);
+        SERVO_SetAngle(BRAS_GAUCHE, 0);
         break;
         //Met les bras vers le bas du robot
         case BAS:
-        SERVO_SetAngle(GAUCHE, voir angle au repos);
+        SERVO_SetAngle(BRAS_GAUCHE, 180);
         break;
     }
-    //Disable juste celui utiliser
-    SERVO_Disable(0);
-    SERVO_Disable(1);
 }
 
 /*******************************************************************************************
