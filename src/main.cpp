@@ -28,6 +28,8 @@ void setup()
   pinMode(LED_BLEUE, OUTPUT);
   SERVO_Enable(0);
   SERVO_Enable(1);
+  eteindreToutesLesDELs();
+  initCapteurCouleur();
 }
   
 
@@ -37,10 +39,33 @@ Fonctions de boucle infini (loop())
 **************************************************************************** */
 // -> Se fait appeler perpetuellement suite au "setup"
 
-void loop() 
-{
-SERVO_SetAngle(1,0);
-SERVO_SetAngle(0,180);
+void loop() {
+  int couleur=suivreLigne();
+  switch (couleur){
+    case couleurRouge:
+    inverseDEL(LED_ROUGE);
+    rouge();
+    inverseDEL(LED_ROUGE);
+    break;
+
+    case couleurVert:
+    inverseDEL(LED_VERTE);
+    vert();
+    inverseDEL(LED_VERTE);
+    break;
+
+    case couleurBleu:
+    inverseDEL(LED_BLEUE);
+    bleu();
+    inverseDEL(LED_BLEUE);
+    break;
+
+    case couleurJaune:
+    inverseDEL(LED_JAUNE);
+    jaune();
+    inverseDEL(LED_JAUNE);
+    break;
+  }
 }
 
 // void setup() 
