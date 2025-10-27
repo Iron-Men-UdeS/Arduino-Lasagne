@@ -100,16 +100,17 @@ void rouge() {
   bool quilleDetectee = false;
   float distanceDetectee = 0.0;
   float angleDetection = 0.0;
+  float distanceLue = 0;
 
   // --- 1. Balayage progressif ---
   for (float angle = 0; angle < 360; angle += PAS_ROTATION) {
 
     // Tourne par petits pas
-    tourne(PAS_ROTATION, droite);
+    tourne(PAS_ROTATION, VITESSE_MOTEUR, DROITE);
     delay(300);
 
     // Lecture de la distance mesurée par le capteur avant
-    float distanceLue = detecDistance(distance1);
+    distanceLue = detecDistance(DISTANCE1);
 
     // Vérifie si on détecte un objet dans la zone utile
     if (distanceLue <= DISTANCE_MAX && distanceLue > DISTANCE_MIN) {
@@ -130,19 +131,19 @@ void rouge() {
   }
 
   // --- 3. Avancer directement pour la faire tomber ---
-  translation(distanceDetectee + 2, VITESSE);  // +2 cm pour s'assurer du contact
+  avance(distanceDetectee + 2, VITESSE);  // +2 cm pour s'assurer du contact
   delay(500);
 
   // --- 4. Fait un 180 ---
-  tourne(180, droite);
+  tourne(180, VITESSE_MOTEUR, DROITE);
   delay(300);
 
   // --- 5. Avance pour revenir à la ligne ---
-  translation(distanceDetectee + 2, VITESSE);
+  avance(distanceDetectee + 2, VITESSE);
   delay(500);
 
   // --- 6. Se remettre droit (revenir à orientation initiale) ---
-  tourne(180-angleDetection, droite);
+  tourne(180-angleDetection, VITESSE_MOTEUR, DROITE);
   delay(300);
 }
 
@@ -157,32 +158,32 @@ void changeRobot(int direction) {
 
     //fonction permet de changer place avec lequipe da coté, faut lui dire si haut = le robot
     //passe en haut ou bas si le rob ot passe en bas, fonction renvoie rien.
-    int time = 3000;
+
     if (direction == 0) { //techniquement le premier mouv qui va en bas puis a gauche
-        tourne(180, droite);
-        delay(time);
-        translation(20);
-        delay(time);
-        tourne(90, droite);
-        delay(time);
-        translation(80);
-        delay(time);
-        tourne(90, droite);
-        delay(time);
-        translation(20);
+        tourne(180, VITESSE_MOTEUR, DROITE);
+        delay(TIME);
+        avance(20, VITESSE_MOTEUR);
+        delay(TIME);
+        tourne(90, VITESSE_MOTEUR, DROITE);
+        delay(TIME);
+        avance(80, VITESSE_MOTEUR);
+        delay(TIME);
+        tourne(90, VITESSE_MOTEUR, DROITE);
+        delay(TIME);
+        avance(20, VITESSE_MOTEUR);
     }
 
     if (direction == 1) { //techniquement le deuxieme mouv qui va en haut puis a droite
-        translation(20);
-        delay(time);
-        tourne(90, droite);
-        delay(time);
-        translation(80);
-        delay(time);
-        tourne(90, droite);
-        delay(time);
-        translation(20);
-        delay(time);
-        tourne(180, droite);
+        avance(20, VITESSE_MOTEUR);
+        delay(TIME);
+        tourne(90, VITESSE_MOTEUR, DROITE);
+        delay(TIME);
+        avance(80, VITESSE_MOTEUR);
+        delay(TIME);
+        tourne(90, VITESSE_MOTEUR, DROITE);
+        delay(TIME);
+        avance(20, VITESSE_MOTEUR);
+        delay(TIME);
+        tourne(180, VITESSE_MOTEUR, DROITE);
     }
 }
