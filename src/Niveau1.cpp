@@ -90,13 +90,13 @@ void bleu(){
 
     //La parti ci-dessous fait faire un carrée au robot et le faire revenir dans le même sens qu'il était
     //Chaque arrête de carrée fera une longueur de 30cm et il va avancer à 50% de la vitesse max
-    tourne(135);
-    translation(30,0.5);
+    tourne(135,0.5, DROITE);
+    avance(30,0.5);
     for (int i=0; i<3; i++){
-        tourne(90);
-        translation(int 30, float 0.5);
+        tourne(90,0.5, DROITE);
+        avance(30,0.5);
     }
-    tourne(-45); //redressi le robot pour qu'il soit dans la même direction que au départ de la fonciton
+    tourne(45,0.5,GAUCHE); //redressi le robot pour qu'il soit dans la même direction que au départ de la fonciton
 
     //Les servomoteur sont activés pour être utiliser lors de la dance=============point pour le style;) 
     SERVO_Enable(0);
@@ -120,14 +120,14 @@ void bleu(){
  * @param Distance 80 cm
  ******************************************************************************************/
 void vert(){
-    translation(80,0.8);
+    avance(80,0.8);
 }
 
 //amelioration possible faire un while jusqua ce que le suiveur de ligne renvoie un info pour dire qu,il troiver la ligne
 void vertV2(){
     //Avance en ligne droite jusque une ligne soit detecter
     while(dectionLigne different du resultat qui est renvoyer lorsque la ligne est detecter){
-        ajusteMoteur(0.8)
+        robotSetSpeed(0.8,0)
     }
 }
 
