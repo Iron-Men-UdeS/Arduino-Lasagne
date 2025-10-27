@@ -1,6 +1,4 @@
 #include "Niveau1.h"
-#include "Capteurs.h"
-
 /*******************************************************************************************
  * Auteur : Alexandre Dionne
  * 
@@ -80,137 +78,112 @@ int suivreLigne(void)
     }
 }
 
-
 /*******************************************************************************************
- * Auteur : Samuuel B. Manelli
+ * Auteur : Simon-Pierre Robert
  * 
- * Fait la petite dance de l'acte 1
+ * Fonction rouge check jusqua voir quille, avance, 180, revient et se realligne
  ******************************************************************************************/
-void bleu(){
+void rouge() {
+  
+  //Fait tourner le robot sur lui-même pour détecter une quille dans un rayon de 0,25 m.
+  //Dès qu’elle est détectée, le robot arrête le balayage, avance pour la faire tomber,
+  //fait un 180, revient à sa position initiale, puis revient à son orientation de départ.
+  //Ne prend ni ne retourne de valeur.
+  
 
-    //La parti ci-dessous fait faire un carrée au robot et le faire revenir dans le même sens qu'il était
-    //Chaque arrête de carrée fera une longueur de 30cm et il va avancer à 50% de la vitesse max
-    tourne(135,0.3, DROITE);
-    avance(30,0.5);
-    for (int i=0; i<3; i++){
-        tourne(90,0.5, DROITE);
-        avance(30,0.5);
+  // --- Paramètres ---
+  const float DISTANCE_MAX = 25.0;   // Rayon de détection (cm)
+  const float DISTANCE_MIN = 5.0;    // Distance minimale à ignorer (cm)
+  const float PAS_ROTATION = 5.0;   // Angle d'incrémentation du balayage (°)
+  const float VITESSE = 0.4;         // Vitesse pour les déplacements
+
+  bool quilleDetectee = false;
+  float distanceDetectee = 0.0;
+  float angleDetection = 0.0;
+  float distanceLue = 0;
+
+  // --- 1. Balayage progressif ---
+  for (float angle = 0; angle < 360; angle += PAS_ROTATION) {
+
+    // Tourne par petits pas
+    tourne(PAS_ROTATION, VITESSE_MOTEUR, DROITE);
+    delay(300);
+    // Lecture de la distance mesurée par le capteur avant
+    distanceLue = detecDistance(DISTANCEA);
+
+    // Vérifie si on détecte un objet dans la zone utile
+    if (distanceLue <= DISTANCE_MAX && distanceLue > DISTANCE_MIN) {
+
+      // Quille détectée -> on enregistre et on arrête immédiatement le balayage
+      quilleDetectee = true;
+      distanceDetectee = distanceLue;
+      angleDetection = angle;
+      break; // On arrête le balayage ici
     }
-    tourne(30,0.5,GAUCHE); //redressi le robot pour qu'il soit dans la même direction que au départ de la fonciton
+  }
 
-    //Les servomoteur sont activés pour être utiliser lors de la dance=============point pour le style;) 
-    // SERVO_Enable(0);
-    // SERVO_Enable(1);
-    // // fais bouger un bras a 90 et lautre a 45 et ensuite les remets a leur place
-    // SERVO_SetAngle(0,45);
-    // SERVO_SetAngle(0,90)
+  // --- 2. Si aucune quille détectée, ne rien faire ---
+  if (!quilleDetectee) {
+    MOTOR_SetSpeed(0, 0);
+    MOTOR_SetSpeed(1, 0);
+    return;
+  }
 
-    // SERVO_SetAngle(0,0);
-    // SERVO_SetAngle(0,0);
-    // //desactive les servomoteur
-    // SERVO_Disable(0);
-    // SERVO_Disable(1);
+  // --- 3. Avancer directement pour la faire tomber ---
+  avance(distanceDetectee + 2, VITESSE);  // +2 cm pour s'assurer du contact
+  delay(500);
+
+  // --- 4. Fait un 180 ---
+  tourne(2*QUART_DE_TOUR, VITESSE_MOTEUR, DROITE);
+  delay(300);
+
+  // --- 5. Avance pour revenir à la ligne ---
+  avance(distanceDetectee + 2, VITESSE);
+  delay(500);
+
+  // --- 6. Se remettre droit (revenir à orientation initiale) ---
+  Serial.println(angleDetection);
+  tourne(angleDetection, VITESSE_MOTEUR, GAUCHE);
+  delay(300);
 }
 
-
 /*******************************************************************************************
- * Auteur : Samuel B. Manelli
+ * Auteur : Simon-Pierre Robert
  * 
- * Avance d'une distance prédéterminer
- * @param Distance 80 cm
+ * fonction qui permet de changer de place avec le robot voisin. Pour ce deplacer a gauche
+ * par en bas ou a droite par en haut 
+ * @param direction (int) direction du robot : 0 = gauche(bas), 1 = droite(haut)
  ******************************************************************************************/
-void vert(){
-    avance(80,0.8);
-}
+void changeRobot(int direction) {
 
-// //amelioration possible faire un while jusqua ce que le suiveur de ligne renvoie un info pour dire qu,il troiver la ligne
-// void vertV2(){
-//     //Avance en ligne droite jusque une ligne soit detecter
-//     while(dectionLigne different du resultat qui est renvoyer lorsque la ligne est detecter){
-//         robotSetSpeed(0.8,0);
-//     }
-// }
+    //fonction permet de changer place avec lequipe da coté, faut lui dire si haut = le robot
+    //passe en haut ou bas si le rob ot passe en bas, fonction renvoie rien.
 
-
-/*******************************************************************************************
- * Auteur : Samuel B. Manelli
- * 
- * Permet de faire bouger le bras droit uniquement
- * 
- * @param position AUCUN, AVANT, ARRIERE, HAUT, BAS
- * 
- * 
- ******************************************************************************************/
-void bougeBrasDroit(int position){
-    //enable juste celui a droite
-    switch(position){
-        //Ne donne aucune instruction donc les servos ne bouge pas
-        case AUCUN:
-        break;
-
-        //Met les bras vers l'avant du robot
-        case AVANT:
-        SERVO_SetAngle(BRAS_DROIT, 90);
-        break;
-        //Met les bras vers l'arrière du robot
-        // case ARRIERE:
-        // SERVO_SetAngle(BRAS_DROIT, voir angle au repos);
-        // break;
-        // //Met les bras vers le haut du robot
-        case HAUT:
-        SERVO_SetAngle(BRAS_DROIT, 175);
-        break;
-        //Met les bras vers le bas du robot
-        case BAS:
-        SERVO_SetAngle(BRAS_DROIT, 5);
-        break;
+    if (direction == 0) { //techniquement le premier mouv qui va en bas puis a gauche
+        tourne(2*QUART_DE_TOUR, VITESSE_MOTEUR, DROITE);
+        delay(TIME);
+        avance(20, VITESSE_MOTEUR);
+        delay(TIME);
+        tourne(QUART_DE_TOUR, VITESSE_MOTEUR, DROITE);
+        delay(TIME);
+        avance(80, VITESSE_MOTEUR);
+        delay(TIME);
+        tourne(QUART_DE_TOUR, VITESSE_MOTEUR, DROITE);
+        delay(TIME);
+        avance(20, VITESSE_MOTEUR);
     }
-}
 
-
-/*******************************************************************************************
- * Auteur : Samuel B. Manelli
- * 
- * Permet de faire bouger le bras gauche uniquement
- * 
- * @param position AUCUN, AVANT, ARRIERE, HAUT, BAS
- * 
- ******************************************************************************************/
-void bougeBrasGauche(int position){
-    //enable juste celui utiliser a gauche
-    switch(position){
-        //Ne donne aucune instruction donc les servos ne bouge pas
-        case AUCUN:
-        break;
-        
-        //Met les bras vers l'avant du robot
-        case AVANT:
-        SERVO_SetAngle(BRAS_GAUCHE, 90);
-        break;
-        //Met les bras vers l'arrière du robot
-        // case ARRIERE:
-        // SERVO_SetAngle(BRAS_GAUCHE, voir angle au repos);
-        // break;
-        // //Met les bras vers le haut du robot
-        case HAUT:
-        SERVO_SetAngle(BRAS_GAUCHE, 10);
-        break;
-        //Met les bras vers le bas du robot
-        case BAS:
-        SERVO_SetAngle(BRAS_GAUCHE, 175);
-        break;
+    if (direction == 1) { //techniquement le deuxieme mouv qui va en haut puis a droite
+        avance(20, VITESSE_MOTEUR);
+        delay(TIME);
+        tourne(QUART_DE_TOUR, VITESSE_MOTEUR, DROITE);
+        delay(TIME);
+        avance(80, VITESSE_MOTEUR);
+        delay(TIME);
+        tourne(QUART_DE_TOUR, VITESSE_MOTEUR, DROITE);
+        delay(TIME);
+        avance(20, VITESSE_MOTEUR);
+        delay(TIME);
+        tourne(2*QUART_DE_TOUR, VITESSE_MOTEUR, DROITE);
     }
-}
-
-/*******************************************************************************************
- * Auteur : Samuel B. Manelli
- * 
- * Permet de faire bouger le bras et le bras droit simultanément
- * 
- * @param posGauche AUCUN, AVANT, ARRIERE, HAUT, BAS
- * @param posDroit AUCUN, AVANT, ARRIERE, HAUT, BAS
- ******************************************************************************************/
-void bouge2Bras(int posGauche,int posDroit){
-    bougeBrasGauche(posGauche);
-    bougeBrasDroit(posDroit);
 }

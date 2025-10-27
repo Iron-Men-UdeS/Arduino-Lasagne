@@ -1,39 +1,19 @@
-/*##### Librairie #####*/
 
 #include "Capteurs.h"
 
-/*##### Objet #####*/
+// Variables
 
-// Capteur de couleur
-Adafruit_TCS34725 tcs = Adafruit_TCS34725(TCS34725_INTEGRATIONTIME_101MS, TCS34725_GAIN_4X); // Définit capteur et caractéristiques d'utilisation
-
-/*##### Variables #####*/
-
-// Suiveur de ligne
-struct suiveur{
-  int pinGauche,pinDroite,pinCentre;
-  int seuilCentre;
-  int seuilDroite;
-  int seuilGauche;
-};
+// Suiveur de ligne//
 int seuilGauche = 800;
 int seuilCentre = 800;
 int seuilDroite = 800;
-
-suiveur suiveurGauche = {CAPTEUR0_GAUCHE,CAPTEUR0_DROITE,CAPTEUR0_CENTRE,800,800,800};
-suiveur suiveurDroite = {CAPTEUR1_GAUCHE,CAPTEUR1_DROITE,CAPTEUR1_CENTRE,800,800,800};
-
-/*##### Fonctions #####*/
-
+//Capteur distance
 /*******************************************************************************************
  * Auteur : Justin
- * 
  * lit un capteur de distance, traduit les lectures 
  * en distance (cm) 
- * 
  * note: très précis de 10-40 cm, moins précis de 40-80, inutilisable en dessous de 10
- * 
- * @param pin (integer) la broche à lire
+ * arguments: la pin du capteur à lire
  * @return la distance en cm
  ******************************************************************************************/
 float detecDistance(int pin){
@@ -42,27 +22,29 @@ float detecDistance(int pin){
     voltage+=analogRead(pin);
   }
   voltage= ((double) voltage)/8;
-  return corrDist(pin,(float) (14994*pow(voltage, -1.173)));
+  return corr(pin,(float) (14994*pow(voltage, -1.173)));
 }
-
 /*******************************************************************************************
  * Auteur : Justin
  * corrige la valeur du capteur de distancce selon la 
- * fonction inverse obtenue dans les tests d'étalonnage
+ * fonction invverse obtenue dans les tests d'étalonnage
  * arguments: la pin du capteur dont proviennent les données, la valeur non corrigée (cm)
  * @return la distance, corrigée, en cm
  ******************************************************************************************/
-float corrDist(int pin, float valeurCapteur){
-  if (pin==DISTANCE1){
+float corr(int pin, float valeurCapteur){
+  if (pin==DISTANCEA){
     return (valeurCapteur+2.22)/1.272;
   }
-  else if(pin==DISTANCE2){
+  else if(pin==DISTANCEC){
     return (valeurCapteur+4.3587)/1.3894;
   }
   else{
     return 0;
   }
 }
+
+// Capteur de couleur
+Adafruit_TCS34725 tcs = Adafruit_TCS34725(TCS34725_INTEGRATIONTIME_101MS, TCS34725_GAIN_4X); // Définit capteur et caractéristiques d'utilisation
 
 /*******************************************************************************************
  * Auteur : Amine
@@ -97,7 +79,7 @@ int calibrerGauche(void)
  * 
  * @return seuil (integer) millieu entre le blanc et le noir
  ******************************************************************************************/
-int calibreCentre(void)
+int calibreCentre(void) 
 {
   Serial.println("Place le capteur CENTRE sur BLANC");
   delay(2000);
@@ -116,7 +98,6 @@ int calibreCentre(void)
   Serial.println(seuil);
   return seuil;
 }
-
 /*******************************************************************************************
  * Auteur : Amine
  * 
@@ -143,35 +124,6 @@ int calibrationDroite(void)
   Serial.println(seuil);
   return seuil;
 }
-
-/*******************************************************************************************
- * Auteur : Amine
- * 
- * Modif : Antoine
- * 
- * Determine la valeur seuil du capteur 
- * 
- * @return seuil (integer) millieu entre le blanc et le noir
- ******************************************************************************************/
-float calibreSuiveur(int pin){
-  Serial.println("Place le capteur sur BLANC");
-  delay(2000);
-  int blanc = analogRead(pin);
-  Serial.print("Valeur blanc = ");
-  Serial.println(blanc);
-
-  Serial.println("Place le capteur sur NOIR");
-  delay(2000);
-  int noir = analogRead(pin);
-  Serial.print("Valeur noir = ");
-  Serial.println(noir);
-
-  int seuil = (blanc + noir) / 2;
-  Serial.print("Seuil centre = ");
-  Serial.println(seuil);
-  return seuil;
-}
-
 /*******************************************************************************************
  * Auteur : Amine
  * 
@@ -181,25 +133,16 @@ float calibreSuiveur(int pin){
  ******************************************************************************************/
 void calibrationTotale(void)
 {
-  suiveurGauche.seuilGauche = calibreSuiveur(suiveurGauche.pinGauche);
+  seuilGauche = calibrerGauche();
   delay(2500);
-  suiveurGauche.seuilCentre = calibreSuiveur(suiveurGauche.pinCentre);
+  seuilCentre = calibreCentre();
   delay(2500);
-  suiveurGauche.seuilDroite = calibreSuiveur(suiveurGauche.pinDroite);
-  delay(2500);
-
-  suiveurDroite.seuilGauche = calibreSuiveur(suiveurDroite.pinGauche);
-  delay(2500);
-  suiveurDroite.seuilCentre = calibreSuiveur(suiveurDroite.pinCentre);
-  delay(2500);
-  suiveurDroite.seuilDroite = calibreSuiveur(suiveurDroite.pinDroite);
+  seuilDroite = calibrationDroite();
   delay(2500);
 }
 
 /*******************************************************************************************
  * Auteur : Amine
- * 
- * Modif : Antoine
  * 
  * lit le capteur de contraste pour detecter une ligne
  * 
@@ -336,9 +279,9 @@ bool mur()
 bool sifflet_5kHz()
 {
   // TODO verifier le fonctionnement avec le pourcentage d'écart
-  float diff = analogRead(BRUIT_AMBIENT) - analogRead(SIGNAL_5kHz) ;
+  float ratio = analogRead(BRUIT_AMBIENT) / analogRead(SIGNAL_5kHz) * 100;
 
-  if (diff > 150)
+  if (ratio > 10)
   { // ecart est a vérifier dans différent contexte de bruit
     return true;
   }
