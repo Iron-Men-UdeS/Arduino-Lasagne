@@ -90,13 +90,13 @@ void bleu(){
 
     //La parti ci-dessous fait faire un carrée au robot et le faire revenir dans le même sens qu'il était
     //Chaque arrête de carrée fera une longueur de 30cm et il va avancer à 50% de la vitesse max
-    tourne(135,0.5, DROITE);
+    tourne(135,0.3, DROITE);
     avance(30,0.5);
     for (int i=0; i<3; i++){
         tourne(90,0.5, DROITE);
         avance(30,0.5);
     }
-    tourne(45,0.5,GAUCHE); //redressi le robot pour qu'il soit dans la même direction que au départ de la fonciton
+    tourne(30,0.5,GAUCHE); //redressi le robot pour qu'il soit dans la même direction que au départ de la fonciton
 
     //Les servomoteur sont activés pour être utiliser lors de la dance=============point pour le style;) 
     // SERVO_Enable(0);
