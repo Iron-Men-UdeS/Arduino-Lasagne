@@ -9,8 +9,8 @@
 // Defines
 
 //Suiveur de ligne
-#define CAPTEUR0_GAUCHE A0
-#define CAPTEUR0_CENTRE A1
+#define CAPTEUR0_GAUCHE A0// TODO utiliser pour AMBIENT
+#define CAPTEUR0_CENTRE A1// TODO utiliser pour 5kHz
 #define CAPTEUR0_DROITE A2
 #define CAPTEUR1_GAUCHE A3
 #define CAPTEUR1_CENTRE A4
@@ -56,5 +56,6 @@ bool mur();
 bool sifflet_5kHz();
 float detecDistance(int pin);
 float detecDistanceLin(int pin);
-float corr(int pin, float valeurCapteur);
+float corrDist(int pin, float valeurCapteur);
+float calibreSuiveur(int pin);
 #endif

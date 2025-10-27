@@ -236,7 +236,20 @@ void avance(int distanceCM, float vitesse){
 }
 
 
-
+/*******************************************************************************************
+ * Auteur : Antoine
+ * 
+ * Description : Fait avancer le robot d'une nombre de centimètre
+ * 
+ * Define : TOUR_COMPLET = 360 deg,   QUART_DE_TOUR = 90 deg
+ *
+ * @param angleDeg (float) angle de rotation
+ * 
+ * @param vitesse (float [0 à 0.8]) vitesse des moteur
+ *
+ * @param direction (bool) direction de rotation: false = GAUCHE, true = DROITE
+ *
+ ******************************************************************************************/
 void tourne(float angleDeg, float vitesse, bool direction){
   ENCODER_Reset(0);
   ENCODER_Reset(1);
