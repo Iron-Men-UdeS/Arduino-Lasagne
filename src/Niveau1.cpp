@@ -80,7 +80,29 @@ int suivreLigne(void)
     }
 }
 
+void randomDEL(){
+    int DEL = rand()%4;
+    switch (DEL){
+        case 0:
+            inverseDEL(LED_BLEUE);
+        break;
 
+        case 1:
+            inverseDEL(LED_ROUGE);
+        break;
+
+        case 2:
+            inverseDEL(LED_JAUNE);
+        break;
+
+        case 3:
+            inverseDEL(LED_VERTE);
+        break;
+        
+        default:
+        break;
+    }
+}
 /*******************************************************************************************
  * Auteur : Samuuel B. Manelli
  * 

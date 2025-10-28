@@ -12,6 +12,10 @@ Inclure les librairies de functions que vous voulez utiliser
 
 #include "main.h"
 
+suiveur suiveurGauche = {CAPTEUR0_GAUCHE,CAPTEUR0_DROITE,CAPTEUR0_CENTRE,800,800,800,0,0,0};
+suiveur suiveurDroite = {CAPTEUR1_GAUCHE,CAPTEUR1_DROITE,CAPTEUR1_CENTRE,800,800,800,0,0,0};
+
+
 /* ****************************************************************************
 Fonctions d'initialisation (setup)
 **************************************************************************** */
@@ -26,8 +30,14 @@ void setup()
   pinMode(LED_VERTE, OUTPUT);
   pinMode(LED_JAUNE, OUTPUT);
   pinMode(LED_BLEUE, OUTPUT);
-  SERVO_Enable(0);
-  SERVO_Enable(1);
+  //SERVO_Enable(0);
+  //SERVO_Enable(1);
+  delay(500);
+  inverseDEL(LED_BLEUE);
+  inverseDEL(LED_ROUGE);
+  inverseDEL(LED_VERTE);
+  inverseDEL(LED_JAUNE);
+  Serial.println("fin du setup");
 }
   
 
@@ -39,8 +49,15 @@ Fonctions de boucle infini (loop())
 
 void loop() 
 {
-SERVO_SetAngle(1,0);
-SERVO_SetAngle(0,180);
+//SERVO_SetAngle(1,0);
+//SERVO_SetAngle(0,180);
+//randomDEL();
+// Serial.println("new del");
+// delay(500);
+tourne(QUART_DE_TOUR,0.25,GAUCHE);
+avance(20, 0.25);
+tourne(QUART_DE_TOUR,0.25,DROITE);
+avance(20,0.25);
 }
 
 // void setup() 

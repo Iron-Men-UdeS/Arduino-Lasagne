@@ -4,6 +4,7 @@
 //Includes 
 #include <Arduino.h>
 #include "Mouvement.h"
+#include "Capteurs.h"
 // Defines
 #define INTERVALLE 100
 #define VITESSE_MOTEUR 0.5
@@ -24,4 +25,5 @@ void vert();
 void bougeBrasDroit(int position);
 void bougeBrasGauche(int position);
 void bouge2Bras(int posGauche,int posDroit);
+void randomDEL();
 #endif

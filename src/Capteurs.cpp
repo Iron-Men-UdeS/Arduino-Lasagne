@@ -10,16 +10,14 @@ Adafruit_TCS34725 tcs = Adafruit_TCS34725(TCS34725_INTEGRATIONTIME_101MS, TCS347
 /*##### Variables #####*/
 
 // Suiveur de ligne
-struct suiveur{
-  int pinGauche,pinDroite,pinCentre;
-  int seuilCentre;
-  int seuilDroite;
-  int seuilGauche;
-  int readCentre,readDroite,readGauche;
-};
+// struct suiveur{
+//   int pinGauche,pinDroite,pinCentre;
+//   int seuilCentre;
+//   int seuilDroite;
+//   int seuilGauche;
+//   int readCentre,readDroite,readGauche;
+// };
 
-suiveur suiveurGauche = {CAPTEUR0_GAUCHE,CAPTEUR0_DROITE,CAPTEUR0_CENTRE,800,800,800,0,0,0};
-suiveur suiveurDroite = {CAPTEUR1_GAUCHE,CAPTEUR1_DROITE,CAPTEUR1_CENTRE,800,800,800,0,0,0};
 
 /*##### Fonctions #####*/
 
@@ -179,11 +177,11 @@ float calibreSuiveur(int pin){
  ******************************************************************************************/
 void calibrationTotale(struct suiveur mySuiveur)
 {
-  mySuiveur.seuilGauche = calibreSuiveur(suiveurGauche.pinGauche);
+  mySuiveur.seuilGauche = calibreSuiveur(mySuiveur.pinGauche);
   delay(2500);
-  mySuiveur.seuilCentre = calibreSuiveur(suiveurGauche.pinCentre);
+  mySuiveur.seuilCentre = calibreSuiveur(mySuiveur.pinCentre);
   delay(2500);
-  mySuiveur.seuilDroite = calibreSuiveur(suiveurGauche.pinDroite);
+  mySuiveur.seuilDroite = calibreSuiveur(mySuiveur.pinDroite);
   delay(2500);
 }
 

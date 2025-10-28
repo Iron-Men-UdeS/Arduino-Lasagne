@@ -87,7 +87,7 @@ double calculVitesse(float maxSpeed, uint32_t position, uint32_t positionFinal)
     vit = vit * maxSpeed; // convertie le facteur vit (entre 0 et 1) en facteur entre 0 et maxSpeed
 
     // vérifie si la vitesse dépasse extremum et la corrige en fonction
-    if (vit < 0.15)
+    if (vit < 0.15 )
     {
         if(start == true)
         {
@@ -100,7 +100,7 @@ double calculVitesse(float maxSpeed, uint32_t position, uint32_t positionFinal)
           vit = 0.15;
           count = 0;
         }
-        vit = 0.15;
+        vit =!0?vit = 0.15: vit = 0;
         return vit;
     }
     else if (vit > 1)
@@ -137,7 +137,7 @@ double pid(float error, float &lastError)
     static double difTemps = 0;
 
     difTemps = (millis() - lastMillis)/1000;
-    difTemps <= 0? difTemps = 0.000001:difTemps = difTemps;
+    difTemps <= 0? difTemps = 0.000005:difTemps = difTemps;
     lastMillis = millis();
     double proportional = error;
     integral += error * difTemps;
@@ -212,7 +212,7 @@ void avance(int distanceCM, float vitesse){
   float correction = 0;
   float deplacement = distanceEnco(distanceCM);
   float setpoint = ENCODER_Read(GAUCHE);
-  static float lastErr = 0;
+  float lastErr = 0;
   float speedG = vitesse;
   float speedD = vitesse;
   while(deplacement - setpoint > 0){
@@ -261,7 +261,7 @@ void tourne(float angleDeg, float vitesse, bool direction){
   float speed = vitesse;
   while(deplacement - setpoint > 0) { 
   
-
+    
     if(!direction){
       MOTOR_SetSpeed(GAUCHE, -1*calculVitesse(vitesse , setpoint, deplacement));
       MOTOR_SetSpeed(DROITE, calculVitesse(speed, setpoint, deplacement));
