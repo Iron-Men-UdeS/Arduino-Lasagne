@@ -12,8 +12,8 @@ Inclure les librairies de functions que vous voulez utiliser
 
 #include "main.h"
 
-suiveur suiveurGauche = {CAPTEUR0_GAUCHE,CAPTEUR0_DROITE,CAPTEUR0_CENTRE,800,800,800,0,0,0};
-suiveur suiveurDroite = {CAPTEUR1_GAUCHE,CAPTEUR1_DROITE,CAPTEUR1_CENTRE,800,800,800,0,0,0};
+//suiveur suiveurGauche = {CAPTEUR0_GAUCHE,CAPTEUR0_DROITE,CAPTEUR0_CENTRE,800,800,800,0,0,0};
+//suiveur suiveurDroite = {CAPTEUR1_GAUCHE,CAPTEUR1_DROITE,CAPTEUR1_CENTRE,800,800,800,0,0,0};
 
 //float corr;
 
@@ -31,14 +31,13 @@ void setup()
   pinMode(LED_VERTE, OUTPUT);
   pinMode(LED_JAUNE, OUTPUT);
   pinMode(LED_BLEUE, OUTPUT);
+  //delay(500);
   //SERVO_Enable(0);
   //SERVO_Enable(1);
-  delay(500);
-  inverseDEL(LED_BLEUE);
-  inverseDEL(LED_ROUGE);
-  inverseDEL(LED_VERTE);
-  inverseDEL(LED_JAUNE);
-  Serial.println("fin du setup");
+  jauneAntoine();
+
+  //avance(20, -0.5);
+  
 }
   
 
@@ -48,6 +47,7 @@ Fonctions de boucle infini (loop())
 **************************************************************************** */
 // -> Se fait appeler perpetuellement suite au "setup"
 
+//float corr;
 void loop() 
 {
 //SERVO_SetAngle(1,0);
@@ -55,10 +55,6 @@ void loop()
 //randomDEL();
 // Serial.println("new del");
 // delay(500);
-tourne(QUART_DE_TOUR,0.25,GAUCHE);
-avance(20, 0.25);
-tourne(QUART_DE_TOUR,0.25,DROITE);
-avance(20,0.25);
 
 
 
@@ -88,6 +84,24 @@ avance(20,0.25);
   //   inverseDEL(LED_JAUNE);
   //   break;
   // }
+  // float angle = angleEnco(45);
+  // float dist = ENCODER_Read(GAUCHE);
+  // bool action1 = false;
+  // if(dist<angle){
+  //   robotSetSpeed(0.2,1,corr);
+  // }
+  // else{
+  //   action1 = true;
+  // }
+  // if(action1 == true);
+  // {
+  //   ENCODER_Reset(GAUCHE);
+  //   ENCODER_Reset(DROITE);
+  // }
+  // float depl = distanceEnco(20);
+  // dist = ENCODER_Read(2);
+  // robotSetSpeed(0.5,0,corr);
+
 }
 
 // void setup() 

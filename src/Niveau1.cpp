@@ -312,6 +312,57 @@ void rouge() {
   //delay(300);
 }
 
+void rouge2(){
+    float dist = detecDistance(DISTANCEA); 
+    int retour;
+    while(dist > 30){ //40 = valeur en cm peut-etre a changer
+        MOTOR_SetSpeed(LEFT,-0.2);
+        MOTOR_SetSpeed(RIGHT,0.2);
+        dist = detecDistance(DISTANCEA);
+        retour = ENCODER_Read(RIGHT);
+    }
+    ENCODER_Reset(LEFT);
+    ENCODER_Reset(RIGHT);
+    double currentmillis = millis();
+    while(millis() - currentmillis<300){
+        MOTOR_SetSpeed(LEFT,0);
+        MOTOR_SetSpeed(RIGHT,0);
+    }   
+
+    Serial.println("retour : : " + String(retour));
+    avance(dist + 10, 0.5);
+    avance(dist + 10, -0.5);
+    ENCODER_Reset(LEFT);
+    ENCODER_Reset(RIGHT);
+    float dep = ENCODER_Read(LEFT);
+    while(dep < retour){
+        MOTOR_SetSpeed(LEFT,0.2);
+        MOTOR_SetSpeed(RIGHT,-0.2);
+        dep = ENCODER_Read(LEFT);
+        Serial.println("deplacement : " + String(dep));
+        Serial.println("retour : : " + String(retour));
+    }
+        MOTOR_SetSpeed(LEFT,0);
+        MOTOR_SetSpeed(RIGHT,0);
+    
+}
+
+void jauneAntoine(){
+    float corr;
+    float dist = detecDistance(DISTANCEA); 
+    while(dist > 20){ //40 = valeur en cm peut-etre a changer
+        robotSetSpeed(0.2,0,corr);
+        dist = detecDistance(DISTANCEA);
+    }
+    tourne(QUART_DE_TOUR,0.5,GAUCHE);
+    avance(40, 0.5);//70 = longueur du mur a ajusté
+    tourne(QUART_DE_TOUR,0.5,DROITE);
+    avance(50, 0.5);//70 = épaisseur du mur a ajusté
+    tourne(QUART_DE_TOUR,0.5,DROITE);
+    avance(40, 0.5);//70 = longueur du mur a ajusté
+    tourne(QUART_DE_TOUR,0.5,GAUCHE);
+    
+}
 /*******************************************************************************************
  * Auteur : Simon-Pierre Robert
  * 
@@ -351,4 +402,4 @@ void changeRobot(int direction) {
         delay(TIME);
         tourne(2*QUART_DE_TOUR, VITESSE_MOTEUR, DROITE);
     }
-}
+} 

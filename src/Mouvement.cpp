@@ -7,7 +7,7 @@
  *
  * Utilise les définitions:
  *
- * TOUR_COMPLET (nb de tick pour un tour de roue)
+ * TOUR_COMPLET_ENCO (nb de tick pour un tour de roue)
  *
  * CIRCON_ROUE_CM (circonférence d'une roue en centimètre)
  *
@@ -28,7 +28,7 @@ uint32_t distanceEnco(float distanceCM)
  *
  * Utilise les définitions:
  *
- * TOUR_COMPLET (nb de tick pour un tour de roue)
+ * TOUR_COMPLET_ENCO (nb de tick pour un tour de roue)
  *
  * CIRCON_ROUE_CM (circonférence d'une roue en centimètre)
  *
@@ -68,6 +68,8 @@ double calculVitesse(float maxSpeed, uint32_t position, uint32_t positionFinal)
     double quart = positionFinal/ 4;
     static byte count = 0;
     bool start = false;
+    int sign = 0;
+    maxSpeed >= 0 ? sign = 1: sign = -1;
 
     if (position < quart)
     { // si dans le premier quart du déplacement accélaire jusqu'a la vitesse requise
@@ -100,12 +102,12 @@ double calculVitesse(float maxSpeed, uint32_t position, uint32_t positionFinal)
           vit = 0.15;
           count = 0;
         }
-        vit =!0?vit = 0.15: vit = 0;
-        return vit;
+        vit =! 0 ? vit = 0.15: vit = 0;
+        return vit*sign;
     }
-    else if (vit > 1)
+    else if (abs(vit) > 1)
     {
-        return 1.0;
+        return 1.0*sign;
     }
     else
     {
@@ -215,7 +217,7 @@ void avance(int distanceCM, float vitesse){
   float lastErr = 0;
   float speedG = vitesse;
   float speedD = vitesse;
-  while(deplacement - setpoint > 0){
+  while(deplacement - abs(setpoint) > 0){
 
     speedG = calculVitesse(vitesse , setpoint, deplacement);
     speedD = calculVitesse(vitesse + correction, setpoint, deplacement) ;

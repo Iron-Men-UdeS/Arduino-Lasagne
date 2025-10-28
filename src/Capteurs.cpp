@@ -5,14 +5,6 @@
 
 // Suiveur de ligne
 
-struct suiveur{
-  int pinGauche,pinDroite,pinCentre;
-  int seuilCentre;
-  int seuilDroite;
-  int seuilGauche;
-  int readCentre,readDroite,readGauche;
-};
-
 suiveur suiveurGauche = {CAPTEUR0_GAUCHE,CAPTEUR0_DROITE,CAPTEUR0_CENTRE,800,800,800};
 suiveur suiveurDroite = {CAPTEUR1_GAUCHE,CAPTEUR1_DROITE,CAPTEUR1_CENTRE,800,800,800};
 

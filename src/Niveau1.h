@@ -30,4 +30,6 @@ void bouge2Bras(int posGauche,int posDroit);
 void randomDEL();
 void rouge();
 void changeRobot(int direction);
+void rouge2();
+void jauneAntoine();
 #endif
