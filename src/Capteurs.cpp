@@ -96,22 +96,22 @@ int calibrationDroite(void)
  * 
  * @return seuil (integer) millieu entre le blanc et le noir
  ******************************************************************************************/
-void calibrationTotale(struct suiveur mySuiveur)
-{
-  suiveurGauche.seuilGauche = calibreSuiveur(suiveurGauche.pinGauche);
-  delay(2500);
-  suiveurGauche.seuilCentre = calibreSuiveur(suiveurGauche.pinCentre);
-  delay(2500);
-  suiveurGauche.seuilDroite = calibreSuiveur(suiveurGauche.pinDroite);
-  delay(2500);
+// void calibrationTotale(struct suiveur mySuiveur)
+// {
+//   suiveurGauche.seuilGauche = calibreSuiveur(suiveurGauche.pinGauche);
+//   delay(2500);
+//   suiveurGauche.seuilCentre = calibreSuiveur(suiveurGauche.pinCentre);
+//   delay(2500);
+//   suiveurGauche.seuilDroite = calibreSuiveur(suiveurGauche.pinDroite);
+//   delay(2500);
 
-  suiveurDroite.seuilGauche = calibreSuiveur(suiveurDroite.pinGauche);
-  delay(2500);
-  suiveurDroite.seuilCentre = calibreSuiveur(suiveurDroite.pinCentre);
-  delay(2500);
-  suiveurDroite.seuilDroite = calibreSuiveur(suiveurDroite.pinDroite);
-  delay(2500);
-}
+//   suiveurDroite.seuilGauche = calibreSuiveur(suiveurDroite.pinGauche);
+//   delay(2500);
+//   suiveurDroite.seuilCentre = calibreSuiveur(suiveurDroite.pinCentre);
+//   delay(2500);
+//   suiveurDroite.seuilDroite = calibreSuiveur(suiveurDroite.pinDroite);
+//   delay(2500);
+// }
 
 /*******************************************************************************************
  * Auteur : Amine
@@ -148,26 +148,26 @@ int lireCapteurs(int capteur)
     // Serial.println(valeurDroite);
   }
 
-//  resultat = (valeurGauche >= seuilGauche) ? 1 : 0;
-  //resultat = (((valeurCentre >= seuilCentre) ? 1 : 0) << 1) + resultat;
-  //resultat = (((valeurDroite >= seuilDroite) ? 1 : 0) << 2) + resultat;
+  resultat = (valeurGauche >= seuilGauche) ? 1 : 0;
+  resultat = (((valeurCentre >= seuilCentre) ? 1 : 0) << 1) + resultat;
+  resultat = (((valeurDroite >= seuilDroite) ? 1 : 0) << 2) + resultat;
 
   return resultat;
 }
 
-int lireSuiveur(struct suiveur mySuiveur)
-{
-  mySuiveur.readCentre = analogRead(mySuiveur.pinCentre);
-  mySuiveur.readDroite = analogRead(mySuiveur.pinDroite);
-  mySuiveur.readGauche = analogRead(mySuiveur.pinGauche);
+// int lireSuiveur(struct suiveur mySuiveur)
+// {
+//   mySuiveur.readCentre = analogRead(mySuiveur.pinCentre);
+//   mySuiveur.readDroite = analogRead(mySuiveur.pinDroite);
+//   mySuiveur.readGauche = analogRead(mySuiveur.pinGauche);
 
-  int resultat = 0;
-  resultat = (mySuiveur.readGauche >= mySuiveur.seuilGauche) ? 1 : 0;
-  resultat = (((mySuiveur.readCentre >= mySuiveur.seuilCentre) ? 1 : 0) << 1) + resultat;
-  resultat = (((mySuiveur.readDroite >= mySuiveur.seuilDroite) ? 1 : 0) << 2) + resultat;
+//   int resultat = 0;
+//   resultat = (mySuiveur.readGauche >= mySuiveur.seuilGauche) ? 1 : 0;
+//   resultat = (((mySuiveur.readCentre >= mySuiveur.seuilCentre) ? 1 : 0) << 1) + resultat;
+//   resultat = (((mySuiveur.readDroite >= mySuiveur.seuilDroite) ? 1 : 0) << 2) + resultat;
 
-  return resultat;
-}
+//   return resultat;
+// }
 
 /*******************************************************************************************
  * Auteur : Rapahel

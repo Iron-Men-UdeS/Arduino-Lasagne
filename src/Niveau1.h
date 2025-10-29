@@ -28,8 +28,8 @@ void bougeBrasDroit(int position);
 void bougeBrasGauche(int position);
 void bouge2Bras(int posGauche,int posDroit);
 void randomDEL();
-void rouge();
+//void rouge();
 void changeRobot(int direction);
-void rouge2();
-void jauneAntoine();
+//void rouge2();
+//void jauneAntoine();
 #endif

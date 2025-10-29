@@ -26,8 +26,6 @@ Fonctions d'initialisation (setup)
 // -> Generalement on y initilise les varibbles globales
 int couleur;
 void setup()
-
-void setup()
 {
   BoardInit();
   pinMode(LED_ROUGE, OUTPUT);
@@ -45,14 +43,13 @@ void setup()
   // SERVO_Enable(1);
 
   // avance(20, -0.5);
-}
+// }
 
 /* ****************************************************************************
 Fonctions de boucle infini (loop())
 **************************************************************************** */
 // -> Se fait appeler perpetuellement suite au "setup"
 
-void loop()
 // float corr;
 void loop()
 {
@@ -64,7 +61,7 @@ void loop()
   {
     
     case 0:
-    rouge2();
+    //rouge2();
     break;
     
     case 1:
@@ -76,7 +73,7 @@ void loop()
     break;
 
     case 3:
-    jauneAntoine();
+    //jauneAntoine();
     break;
     
     default:

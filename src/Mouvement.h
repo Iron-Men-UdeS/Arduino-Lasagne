@@ -30,7 +30,7 @@ void robotSetSpeed(float vitesse, int direction ,float &correction);
 void vitesseRoues(float vitesse1, float vitesse2);
 void avance(int distanceCM, float vitesse);
 void tourne(float angleDeg, float vitesse, bool direction);
-
+void vitesseRoues(float vitesse1, float vitesse2);
 #endif 
 
 

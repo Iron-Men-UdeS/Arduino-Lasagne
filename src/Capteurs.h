@@ -41,19 +41,19 @@
 #define DISTANCEC A3
 // Variables
 
-struct suiveur{
-  int pinGauche,pinDroite,pinCentre;
-  int seuilCentre;
-  int seuilDroite;
-  int seuilGauche;
-  int readCentre,readDroite,readGauche;
-};
+// struct suiveur{
+//   int pinGauche,pinDroite,pinCentre;
+//   int seuilCentre;
+//   int seuilDroite;
+//   int seuilGauche;
+//   int readCentre,readDroite,readGauche;
+// };
 
 // //Prototypes de fonctions
 int calibrerGauche(void);
 int calibreCentre(void);
 int calibrationDroite(void);
-void calibrationTotale(void);
+//void calibrationTotale(void);
 int lireCapteurs(int capteur);
 void initCapteurCouleur(void);
 int detectCouleur();
@@ -61,9 +61,9 @@ void inverseDEL(int pin);
 void eteindreToutesLesDELs(void);
 bool mur();
 bool sifflet_5kHz();
-float detecDistance(int pin);
-float detecDistanceLin(int pin);
-float corrDist(int pin, float valeurCapteur);
-float calibreSuiveur(int pin);
-int lireSuiveur(struct suiveur);
+//float detecDistance(int pin);
+//float detecDistanceLin(int pin);
+//float corrDist(int pin, float valeurCapteur);// a remettre
+//float calibreSuiveur(int pin);
+//int lireSuiveur(struct suiveur);
 #endif
