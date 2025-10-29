@@ -4,11 +4,11 @@
 // Variables
 
 // Suiveur de ligne
-int seuilGauche = 800;
-int seuilCentre = 800;
-int seuilDroite = 800;
+int seuilGauche = 875;
+int seuilCentre = 875;
+int seuilDroite = 875;
 
-// Capteur de couleur
+// Capteur de couleur test
 Adafruit_TCS34725 tcs = Adafruit_TCS34725(TCS34725_INTEGRATIONTIME_101MS, TCS34725_GAIN_4X); // Définit capteur et caractéristiques d'utilisation
 
 /*******************************************************************************************
@@ -127,17 +127,23 @@ int lireCapteurs(int capteur)
     valeurGauche = analogRead(CAPTEUR0_GAUCHE);
     valeurCentre = analogRead(CAPTEUR0_CENTRE);
     valeurDroite = analogRead(CAPTEUR0_DROITE);
+    // Serial.println(valeurGauche);
+    // Serial.println(valeurCentre);
+    // Serial.println(valeurDroite);
   }
   else if (capteur == 1)
   {
     valeurGauche = analogRead(CAPTEUR1_GAUCHE);
     valeurCentre = analogRead(CAPTEUR1_CENTRE);
     valeurDroite = analogRead(CAPTEUR1_DROITE);
+    // Serial.println(valeurGauche);
+    // Serial.println(valeurCentre);
+    // Serial.println(valeurDroite);
   }
 
-  resultat = (valeurGauche <= seuilGauche) ? 1 : 0;
-  resultat = (((valeurCentre <= seuilCentre) ? 1 : 0) << 1) + resultat;
-  resultat = (((valeurDroite <= seuilDroite) ? 1 : 0) << 2) + resultat;
+  resultat = (valeurGauche >= seuilGauche) ? 1 : 0;
+  resultat = (((valeurCentre >= seuilCentre) ? 1 : 0) << 1) + resultat;
+  resultat = (((valeurDroite >= seuilDroite) ? 1 : 0) << 2) + resultat;
 
   return resultat;
 }

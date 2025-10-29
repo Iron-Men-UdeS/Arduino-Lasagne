@@ -26,7 +26,7 @@ void setup()
   pinMode(LED_VERTE, OUTPUT);
   pinMode(LED_JAUNE, OUTPUT);
   pinMode(LED_BLEUE, OUTPUT);
-  initCapteurCouleur();
+ // initCapteurCouleur();
 }
   
 
@@ -38,9 +38,14 @@ Fonctions de boucle infini (loop())
 
 void loop() 
 {
+  // Serial.print("OK");
   couleur = suivreLigne();
   //couleur = detectCouleur();
-  Serial.println(couleur);
+  Serial.println("couleur");
+
+  // Serial.println(analogRead(CAPTEUR1_DROITE));
+  // delay(1000);
+
 }
 
 // void setup() 

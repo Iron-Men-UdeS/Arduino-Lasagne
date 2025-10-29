@@ -175,3 +175,8 @@ void robotSetSpeed(float vitesse, int direction, float &correction)
     correction = correction + pid(error, previousError);
 }
 
+void vitesseRoues(float vitesse1, float vitesse2)
+{
+    MOTOR_SetSpeed(GAUCHE, vitesse1);
+    MOTOR_SetSpeed(DROITE, vitesse2);
+}

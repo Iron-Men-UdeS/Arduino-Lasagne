@@ -4,7 +4,7 @@
 //Includes 
 #include <Arduino.h>
 // Defines
-#define INTERVALLE 100
+#define INTERVALLE 1000
 #define VITESSE_MOTEUR 0.5
 // Variables externe
 
