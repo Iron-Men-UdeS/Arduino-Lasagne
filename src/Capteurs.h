@@ -23,10 +23,10 @@
 #define LED_BLEUE 45
 
 //Capteur couleur
-#define couleurRouge 0
-#define couleurVert 1
-#define couleurBleu 2
-#define couleurJaune 3
+#define COULEURROUGE 0
+#define COULEURVERT 1
+#define COULEURBLEU 2
+#define COULEURJAUNE 3
 
 //Capteur d'obstacle
 #define PIN_DIST_G 48 

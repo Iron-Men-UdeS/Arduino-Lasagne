@@ -54,7 +54,11 @@ Fonctions de boucle infini (loop())
 void loop()
 {
   //############### ACT 1 ###############
-  #if act == 1
+  //#if act == 1
+
+  // couleur = detectCouleur();
+  // Serial.println(couleur);
+  // delay(1000);
 
   int couleur = suivreLigne();
   switch (couleur)
@@ -79,18 +83,18 @@ void loop()
     default:
     break;
   }
-  #endif
-//#####################################
+//   #endif
+// //#####################################
 
 
-//############### ACT 2 ###############
-#if act == 2
+// //############### ACT 2 ###############
+// #if act == 2
 
 
 
 
-#endif
-//#####################################
+// #endif
+// //#####################################
 
 
 

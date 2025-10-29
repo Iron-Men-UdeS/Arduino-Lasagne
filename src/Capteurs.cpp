@@ -191,31 +191,49 @@ void initCapteurCouleur(void)
  ******************************************************************************************/
 int detectCouleur(void)
 {
-  uint16_t r, g, b, c;            // Definit les variables r,g,b et c en 16 bits valeurs positives, comme ce que le capteur renvoie
-  tcs.getRawData(&r, &g, &b, &c); // Prends les valeurs des capteurs et les renvoies avec les pointeurs de r,g,b et c
-  float total = r + g + b;        // Calcul le total afin de faire des proportions de couleurs
-  if (total == 0)
-  {
-    total = 1;
-  } // Afin d'eviter les divisions par 0
-  float rouge = (float)r / total; // variable rouge est la proportion de la couleur
-  float vert = (float)g / total;  // la meme avec vert, le float entre parenthèses sert à faire en sorte que la division ne soit pas entière
-  float bleu = (float)b / total;  // la meme avec bleu
-  if (rouge*1.15>bleu&&rouge*1.1>vert){   // Verifie si rouge est dominant sur les autres couleurs par un coefficient de 1.3 
-  return couleurRouge;   //Renvoie 0
-}
-else if (bleu*1.1>rouge&&bleu*1.1>vert){
-  return couleurBleu;
-}
-else if (vert*0.7>rouge&&vert*0.85>bleu){
-  return couleurVert;
-}
-else if ((rouge+vert)*0.4>bleu){  //Pour le jaune, la moitié de rouge et vert combiné avec un plus petit coefficient
-  return couleurJaune;
-}
-else{
-  return -1;     //Si aucune couleur dominante, retourne -1
-}
+  uint16_t clear, red, green, blue;
+
+    //tcs.setInterrupt(false);      // turn on LED
+
+    //delay(60);  // takes 50ms to read
+
+    tcs.getRawData(&red, &green, &blue, &clear);
+
+   // tcs.setInterrupt(true);  // turn off LED
+
+    Serial.print("C:\t"); Serial.print(clear);
+    Serial.print("\tR:\t"); Serial.print(red);
+    Serial.print("\tG:\t"); Serial.print(green);
+    Serial.print("\tB:\t"); Serial.print(blue);
+    Serial.println();
+
+    // Figure out some basic hex code for visualization
+    // uint32_t sum = clear;
+    // float r, g, b;
+    // r = red; r /= sum;
+    // g = green; g /= sum;
+    // b = blue; b /= sum;
+    // r *= 256; g *= 256; b *= 256;
+
+    
+    if(red >= 700 && green >= 820)
+    {
+      return COULEURJAUNE;
+    }
+    if(red >= green && red >= blue && red >= 700)
+    {
+      return COULEURROUGE;
+    }
+    if(green >= blue && green >= red && green >= 850)
+    {
+       return COULEURVERT;
+    }
+    if(blue >= 700)
+    {
+      return COULEURBLEU;
+    }
+    
+      return -1;
 }
 
 /*******************************************************************************************

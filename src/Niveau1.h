@@ -8,7 +8,7 @@
 #include "Mouvement.h"
 #include "Capteurs.h"
 // Defines
-#define INTERVALLE 100
+#define INTERVALLE 50
 #define VITESSE_MOTEUR 0.2
 #define AVANT 1
 #define ARRIERE 2
