@@ -9,12 +9,12 @@
 // Defines
 
 //Suiveur de ligne
-#define CAPTEUR0_GAUCHE A0// TODO utiliser pour AMBIENT
-#define CAPTEUR0_CENTRE A1// TODO utiliser pour 5kHz
-#define CAPTEUR0_DROITE A2
-#define CAPTEUR1_GAUCHE A3
-#define CAPTEUR1_CENTRE A4
-#define CAPTEUR1_DROITE A5
+#define CAPTEUR0_GAUCHE A12
+#define CAPTEUR0_CENTRE A13
+#define CAPTEUR0_DROITE A14
+#define CAPTEUR1_GAUCHE A9
+#define CAPTEUR1_CENTRE A10
+#define CAPTEUR1_DROITE A11
 
 //DELS
 #define LED_ROUGE 46

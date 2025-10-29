@@ -9,7 +9,7 @@
 #include "Capteurs.h"
 // Defines
 #define INTERVALLE 100
-#define VITESSE_MOTEUR 0.5
+#define VITESSE_MOTEUR 0.2
 #define AVANT 1
 #define ARRIERE 2
 #define HAUT 3

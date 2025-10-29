@@ -139,12 +139,15 @@ double pid(float error, float &lastError)
     static double difTemps = 0;
 
     difTemps = (millis() - lastMillis)/1000;
-    difTemps <= 0? difTemps = 0.000005:difTemps = difTemps;
+    (difTemps <= 0)? difTemps = 0.000001:difTemps = difTemps;// si diff de temps = 0 on le change pour 1 milliSeconde
+
     lastMillis = millis();
     double proportional = error;
     integral += error * difTemps;
+    (integral == NAN)? integral = 0:integral = integral;//si not a number on change pour 0
     
     double derive = (error - lastError) / difTemps;
+    (derive == NAN)?derive = 0:derive = derive; //si not a number on change pour 0
     lastError = error;
     double out = (KP * proportional) + (KI * integral) + (KD * derive);
     return out;

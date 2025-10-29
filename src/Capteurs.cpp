@@ -5,8 +5,9 @@
 
 // Suiveur de ligne
 
-suiveur suiveurGauche = {CAPTEUR0_GAUCHE,CAPTEUR0_DROITE,CAPTEUR0_CENTRE,800,800,800};
-suiveur suiveurDroite = {CAPTEUR1_GAUCHE,CAPTEUR1_DROITE,CAPTEUR1_CENTRE,800,800,800};
+suiveur suiveurDroite = {CAPTEUR0_GAUCHE,CAPTEUR0_DROITE,CAPTEUR0_CENTRE,800,800,800};
+suiveur suiveurGauche = {CAPTEUR1_GAUCHE,CAPTEUR1_DROITE,CAPTEUR1_CENTRE,800,800,800};
+
 
 /*##### Fonctions #####*/
 
@@ -218,7 +219,7 @@ void initCapteurCouleur(void)
 /*******************************************************************************************
  * Auteur : Rapahel
  * 
- * Initialise le capteur de couleur
+ * @return couleur détecté : Rouge = 0, Vert = 1, Bleu = 2, Jaune = 3, aucune couleur = -1
  ******************************************************************************************/
 int detectCouleur(void)
 {
@@ -232,19 +233,19 @@ int detectCouleur(void)
   float rouge = (float)r / total; // variable rouge est la proportion de la couleur
   float vert = (float)g / total;  // la meme avec vert, le float entre parenthèses sert à faire en sorte que la division ne soit pas entière
   float bleu = (float)b / total;  // la meme avec bleu
-  if (rouge > bleu * 1.3 && rouge > vert * 1.3)
+  if (rouge* 1.15 > bleu  && rouge* 1.1 > vert)
   {                      // Verifie si rouge est dominant sur les autres couleurs par un coefficient de 1.3
     return couleurRouge; // Renvoie 0
   }
-  else if (bleu > rouge * 1.3 && bleu > vert * 1.3)
+  else if (bleu*1.1 > rouge && bleu*1.1 > vert )
   {
     return couleurBleu;
   }
-  else if (vert > rouge * 1.3 && vert > bleu * 1.3)
+  else if (vert*0.7 > rouge && vert*0.85 > bleu)
   {
     return couleurVert;
   }
-  else if ((rouge + vert) / 2 > bleu * 1.2)
+  else if ((rouge + vert)*0.4 > bleu )
   { // Pour le jaune, la moitié de rouge et vert combiné avec un plus petit coefficient
     return couleurJaune;
   }

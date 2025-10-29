@@ -11,11 +11,12 @@ Inclure les librairies de functions que vous voulez utiliser
 **************************************************************************** */
 
 #include "main.h"
+#define act 1
 
-//suiveur suiveurGauche = {CAPTEUR0_GAUCHE,CAPTEUR0_DROITE,CAPTEUR0_CENTRE,800,800,800,0,0,0};
-//suiveur suiveurDroite = {CAPTEUR1_GAUCHE,CAPTEUR1_DROITE,CAPTEUR1_CENTRE,800,800,800,0,0,0};
+// suiveur suiveurGauche = {CAPTEUR0_GAUCHE,CAPTEUR0_DROITE,CAPTEUR0_CENTRE,800,800,800,0,0,0};
+// suiveur suiveurDroite = {CAPTEUR1_GAUCHE,CAPTEUR1_DROITE,CAPTEUR1_CENTRE,800,800,800,0,0,0};
 
-//float corr;
+// float corr;
 
 /* ****************************************************************************
 Fonctions d'initialisation (setup)
@@ -24,115 +25,68 @@ Fonctions d'initialisation (setup)
 // -> Se fait appeler seulement un fois
 // -> Generalement on y initilise les varibbles globales
 
-void setup() 
+void setup()
 {
   BoardInit();
-  pinMode(LED_ROUGE, OUTPUT);
-  pinMode(LED_VERTE, OUTPUT);
-  pinMode(LED_JAUNE, OUTPUT);
-  pinMode(LED_BLEUE, OUTPUT);
-  //delay(500);
-  //SERVO_Enable(0);
-  //SERVO_Enable(1);
-  jauneAntoine();
+  // pinMode(LED_ROUGE, OUTPUT);
+  // pinMode(LED_VERTE, OUTPUT);
+  // pinMode(LED_JAUNE, OUTPUT);
+  // pinMode(LED_BLEUE, OUTPUT);
+  // delay(500);
+  // SERVO_Enable(0);
+  // SERVO_Enable(1);
 
-  //avance(20, -0.5);
-  
+  // avance(20, -0.5);
 }
-  
-
 
 /* ****************************************************************************
 Fonctions de boucle infini (loop())
 **************************************************************************** */
 // -> Se fait appeler perpetuellement suite au "setup"
 
-//float corr;
-void loop() 
+// float corr;
+void loop()
 {
-//SERVO_SetAngle(1,0);
-//SERVO_SetAngle(0,180);
-//randomDEL();
-// Serial.println("new del");
-// delay(500);
+  //############### ACT 1 ###############
+  #if act == 1
+
+  int couleur = suivreLigne();
+  switch (couleur)
+  {
+    
+    case 0:
+    rouge2();
+    break;
+    
+    case 1:
+    vert();
+    break;
+    
+    case 2:
+    bleu();
+    break;
+
+    case 3:
+    jauneAntoine();
+    break;
+    
+    default:
+    break;
+  }
+  #endif
+//#####################################
+
+
+//############### ACT 2 ###############
+#if act == 2
 
 
 
-  // int couleur=suivreLigne();
-  // switch (couleur){
-  //   case couleurRouge:
-  //   inverseDEL(LED_ROUGE);
-  //   rouge();
-  //   inverseDEL(LED_ROUGE);
-  //   break;
 
-  //   case couleurVert:
-  //   inverseDEL(LED_VERTE);
-  //   vert();
-  //   inverseDEL(LED_VERTE);
-  //   break;
+#endif
+//#####################################
 
-  //   case couleurBleu:
-  //   inverseDEL(LED_BLEUE);
-  //   bleu();
-  //   inverseDEL(LED_BLEUE);
-  //   break;
 
-  //   case couleurJaune:
-  //   inverseDEL(LED_JAUNE);
-  //   jaune();
-  //   inverseDEL(LED_JAUNE);
-  //   break;
-  // }
-  // float angle = angleEnco(45);
-  // float dist = ENCODER_Read(GAUCHE);
-  // bool action1 = false;
-  // if(dist<angle){
-  //   robotSetSpeed(0.2,1,corr);
-  // }
-  // else{
-  //   action1 = true;
-  // }
-  // if(action1 == true);
-  // {
-  //   ENCODER_Reset(GAUCHE);
-  //   ENCODER_Reset(DROITE);
-  // }
-  // float depl = distanceEnco(20);
-  // dist = ENCODER_Read(2);
-  // robotSetSpeed(0.5,0,corr);
 
 }
 
-// void setup() 
-// {
-//   Wire.begin();
-//   BoardInit();
-//   pinMode(LED_ROUGE, OUTPUT);
-//   pinMode(LED_VERTE, OUTPUT);
-//   pinMode(LED_JAUNE, OUTPUT);
-//   pinMode(LED_BLEUE, OUTPUT);
-
-//   if (tcs.begin()) {        //S'assure que le capteur est detecte
-//   tcs.setInterrupt(false);
-//   delay(100);}
-// }
-
-// void loop() {
-//    eteindreToutesLesLEDs();
-
-//   if(detecCouleur()==couleurRouge){
-//   inverseDEL(LED_ROUGE);
-//   }
-//   if(detecCouleur()==couleurBleu){
-//   inverseDEL(LED_BLEUE);
-//   }
-//   if(detecCouleur()==couleurJaune){
-//   inverseDEL(LED_JAUNE);
-//   }
-//   if(detecCouleur()==couleurVert){
-//   inverseDEL(LED_VERTE);
-//   }
-//   delay(250);
-
-// }

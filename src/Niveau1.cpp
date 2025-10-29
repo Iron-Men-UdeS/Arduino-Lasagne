@@ -6,6 +6,10 @@
  * 
  * @return couleur (integer) valeur de la coueleur lue
  ******************************************************************************************/
+suiveur suiveurD = {CAPTEUR0_GAUCHE,CAPTEUR0_DROITE,CAPTEUR0_CENTRE,1000,1000,1000};
+suiveur suiveurG = {CAPTEUR1_GAUCHE,CAPTEUR1_DROITE,CAPTEUR1_CENTRE,1000,1000,1000};
+float correction81 = 0;
+
 int suivreLigne(void)
 {
     unsigned long currentTime;
@@ -23,45 +27,86 @@ int suivreLigne(void)
         if ((currentTime - previousTime) >= INTERVALLE)
         {
             previousTime = currentTime;
-            ligne = lireCapteurs(0);
-            ligne = (lireCapteurs(1) << 3) + ligne;
+            ligne = lireSuiveur(suiveurD);
+            ligne = (lireSuiveur(suiveurG) << 3) + ligne;
 
             switch (ligne)
             {
             case 0x01: // 000 001  Grosse correction vers la gauche
+                Serial.println("000 001");
+                i0 = 0.75;
+                i1 = 1;
+                break;
+
             case 0x03: // 000 011
+                Serial.println("000 011");
                 i0 = 0.75;
                 i1 = 1;
                 break;
 
             case 0x02: // 000 010  Petite correction vers la gauche
-            case 0x06: // 000 110
+                Serial.println("000 010");
                 i0 = 0.90;
                 i1 = 1;
                 break;
-
+            
+            case 0x06: // 000 110
+                Serial.println("000 110");
+                i0 = 0.90;
+                i1 = 1;
+                break;
+                
             case 0x04: // 000 100  Aucune correction 
+                i0 = 1;
+                Serial.println("000 100");
+                i1 = 1;
+                break;
+                
             case 0x0C: // 001 100
-            case 0x08: // 001 000
+                Serial.println("001 100");
                 i0 = 1;
                 i1 = 1;
-
                 break;
-
+                
+            case 0x08: // 001 000
+                Serial.println("001 000");
+                i0 = 1;
+                i1 = 1;
+                
+                break;
+                
             case 0x18: // 011 000  Petite correction vers la droite
-            case 0x10: // 010 000
+                Serial.println("011 000");
                 i0 = 1;
                 i1 = 0.90;
                 break;
 
+            case 0x10: // 010 000
+                Serial.println("010 000");
+                i0 = 1;
+                i1 = 0.90;
+                break;
+                
             case 0x30: // 110 000  Grosse correction vers la droite
-            case 0x20: // 100 000
+                Serial.println("110 000");
                 i0 = 1;
                 i1 = 0.75;
                 break;
-
+                
+            case 0x20: // 100 000
+                Serial.println("100 000");
+                i0 = 1;
+                i1 = 0.75;
+                break;
+                
             case 0x3F: // 111 111 ligne partout  Arret complet
+                Serial.println("111 111");
+                i0 = 0;
+                i1 = 0;
+                break;
+
             case 0x00: // 000 000 pas de ligne
+                Serial.println("000 000");
                 i0 = 0;
                 i1 = 0;
                 break;
@@ -69,8 +114,8 @@ int suivreLigne(void)
             Serial.println(i0);
             Serial.println(i1);
             //avance(VITESSE_MOTEUR*i0, VITESSE_MOTEUR*i1);
-            MOTOR_SetSpeed(GAUCHE, VITESSE_MOTEUR*i0);
-            MOTOR_SetSpeed(DROITE, VITESSE_MOTEUR*i1);
+            //MOTOR_SetSpeed(GAUCHE, VITESSE_MOTEUR*i0);
+            //MOTOR_SetSpeed(DROITE, VITESSE_MOTEUR*i1);
         }
 
         if(detectCouleur() != -1)
@@ -139,10 +184,10 @@ void bleu(){
  * Auteur : Samuel B. Manelli
  * 
  * Avance d'une distance prédéterminer
- * @param Distance 80 cm
+ * Distance 80 cm
  ******************************************************************************************/
 void vert(){
-    avance(80,0.8);
+    avance(80,0.7);
 }
 
 // //amelioration possible faire un while jusqua ce que le suiveur de ligne renvoie un info pour dire qu,il troiver la ligne
@@ -355,11 +400,11 @@ void jauneAntoine(){
         dist = detecDistance(DISTANCEA);
     }
     tourne(QUART_DE_TOUR,0.5,GAUCHE);
-    avance(40, 0.5);//70 = longueur du mur a ajusté
+    avance(40, 0.5);//40 = longueur du mur a ajusté
     tourne(QUART_DE_TOUR,0.5,DROITE);
-    avance(50, 0.5);//70 = épaisseur du mur a ajusté
+    avance(50, 0.5);//50 = épaisseur du mur a ajusté
     tourne(QUART_DE_TOUR,0.5,DROITE);
-    avance(40, 0.5);//70 = longueur du mur a ajusté
+    avance(40, 0.5);//40 = longueur du mur a ajusté
     tourne(QUART_DE_TOUR,0.5,GAUCHE);
     
 }
@@ -403,3 +448,137 @@ void changeRobot(int direction) {
         tourne(2*QUART_DE_TOUR, VITESSE_MOTEUR, DROITE);
     }
 } 
+
+
+void changePlace(int posI,int posF)
+{
+  if(posI==1&&posF==2){
+    ENCODER_Reset(0);
+    ENCODER_Reset(1);
+   while(ENCODER_Read(1)<angleEnco(45)&&ENCODER_Read(0)<angleEnco(45)){
+    robotSetSpeed(0.7,1,correction81);
+   }
+   robotSetSpeed(0,0,correction81);
+   ENCODER_Reset(0);
+   ENCODER_Reset(1);
+   while(ENCODER_Read(1)<distanceEnco(28.28)&&ENCODER_Read(0)<distanceEnco(28.28)){
+    robotSetSpeed(-0.7,0,correction81);
+   }
+   robotSetSpeed(0,0,correction81);
+   ENCODER_Reset(0);
+   ENCODER_Reset(1);
+   while(ENCODER_Read(1)<angleEnco(45)&&ENCODER_Read(0)<angleEnco(45)){
+    robotSetSpeed(calculVitesse(0.7,0,angleEnco(45)),-1,correction81);
+   }
+   robotSetSpeed(0,0,correction81);
+   ENCODER_Reset(0);
+   ENCODER_Reset(1);
+  }
+  if(posI==2&&posF==3){
+    ENCODER_Reset(0);
+    ENCODER_Reset(1);
+   while(ENCODER_Read(1)<angleEnco(45)&&ENCODER_Read(0)<angleEnco(45)){
+    robotSetSpeed(calculVitesse(0.7,0,angleEnco(45)),-1,correction81);
+   }
+   robotSetSpeed(0,0,correction81);
+   ENCODER_Reset(0);
+   ENCODER_Reset(1);
+   while(ENCODER_Read(1)<distanceEnco(28.28)&&ENCODER_Read(0)<distanceEnco(28.28)){
+    robotSetSpeed(-calculVitesse(0.7,0,distanceEnco(28.28)),0,correction81);
+   }
+   robotSetSpeed(0,0,correction81);
+   ENCODER_Reset(0);
+   ENCODER_Reset(1);
+   while(ENCODER_Read(1)<angleEnco(45)&&ENCODER_Read(0)<angleEnco(45)){
+    robotSetSpeed(calculVitesse(0.7,0,angleEnco(45)),1,correction81);
+   }
+   robotSetSpeed(0,0,correction81);
+   ENCODER_Reset(0);
+   ENCODER_Reset(1);
+  }
+  if(posI==3&&posF==4){
+    ENCODER_Reset(0);
+    ENCODER_Reset(1);
+   while(ENCODER_Read(1)<angleEnco(45)&&ENCODER_Read(0)<angleEnco(45)){
+    robotSetSpeed(calculVitesse(0.7,0,angleEnco(45)),1,correction81);
+   }
+   robotSetSpeed(0,0,correction81);
+   ENCODER_Reset(0);
+   ENCODER_Reset(1);
+   while(ENCODER_Read(1)<distanceEnco(28.28)&&ENCODER_Read(0)<distanceEnco(28.28)){
+    robotSetSpeed(calculVitesse(0.7,0,distanceEnco(28.28)),0,correction81);
+   }
+   robotSetSpeed(0,0,correction81);
+   ENCODER_Reset(0);
+   ENCODER_Reset(1);
+   while(ENCODER_Read(1)<angleEnco(45)&&ENCODER_Read(0)<angleEnco(45)){
+    robotSetSpeed(calculVitesse(0.7,0,angleEnco(45)),-1,correction81);
+   }
+   robotSetSpeed(0,0,correction81);
+   ENCODER_Reset(0);
+   ENCODER_Reset(1);
+  }
+  if(posI==4&&posF==1){
+    ENCODER_Reset(0);
+    ENCODER_Reset(1);
+   while(ENCODER_Read(1)<angleEnco(45)&&ENCODER_Read(0)<angleEnco(45)){
+    robotSetSpeed(calculVitesse(0.7,0,angleEnco(45)),-1,correction81);
+   }
+   robotSetSpeed(0,0,correction81);
+   ENCODER_Reset(0);
+   ENCODER_Reset(1);
+   while(ENCODER_Read(1)<distanceEnco(28.28)&&ENCODER_Read(0)<distanceEnco(28.28)){
+    robotSetSpeed(calculVitesse(0.7,0,distanceEnco(28.28)),0,correction81);
+   }
+   robotSetSpeed(0,0,correction81);
+   ENCODER_Reset(0);
+   ENCODER_Reset(1);
+   while(ENCODER_Read(1)<angleEnco(45)&&ENCODER_Read(0)<angleEnco(45)){
+    robotSetSpeed(calculVitesse(0.7,0,angleEnco(45)),1,correction81);
+   }
+   robotSetSpeed(0,0,correction81);
+   ENCODER_Reset(0);
+   ENCODER_Reset(1);
+  }
+  if(posI==4&&posF==0){
+    ENCODER_Reset(0);
+    ENCODER_Reset(1);
+   while(ENCODER_Read(1)<angleEnco(90)&&ENCODER_Read(0)<angleEnco(90)){
+    robotSetSpeed(calculVitesse(0.7,0,angleEnco(90)),-1,correction81);
+   }
+   robotSetSpeed(0,0,correction81);
+   ENCODER_Reset(0);
+   ENCODER_Reset(1);
+   while(ENCODER_Read(1)<distanceEnco(20)&&ENCODER_Read(0)<distanceEnco(20)){
+    robotSetSpeed(calculVitesse(0.7,0,distanceEnco(20)),0,correction81);
+   }
+   robotSetSpeed(0,0,correction81);
+   ENCODER_Reset(0);
+   ENCODER_Reset(1);
+   while(ENCODER_Read(1)<angleEnco(90)&&ENCODER_Read(0)<angleEnco(90)){
+    robotSetSpeed(calculVitesse(0.7,0,angleEnco(90)),1,correction81);
+   }
+   robotSetSpeed(0,0,correction81);
+   ENCODER_Reset(0);
+   ENCODER_Reset(1);
+  }
+  if(posI==0&&posF==1){
+    ENCODER_Reset(0);
+    ENCODER_Reset(1);
+   while(ENCODER_Read(1)<distanceEnco(20)&&ENCODER_Read(0)<distanceEnco(20)){
+    robotSetSpeed(calculVitesse(0.7,0,distanceEnco(20)),0,correction81);}
+   robotSetSpeed(0,0,correction81);
+   ENCODER_Reset(0);
+   ENCODER_Reset(1);
+   }
+  if(posI==1&&posF==0){
+    ENCODER_Reset(0);
+    ENCODER_Reset(1);
+   while(ENCODER_Read(1)<distanceEnco(20)&&ENCODER_Read(0)<distanceEnco(20)){
+    robotSetSpeed(-calculVitesse(0.7,0,distanceEnco(20)),0,correction81);
+   robotSetSpeed(0,0,correction81);}
+   ENCODER_Reset(0);
+   ENCODER_Reset(1);
+
+}
+}
