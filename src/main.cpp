@@ -25,6 +25,7 @@ Fonctions d'initialisation (setup)
 // -> Se fait appeler seulement un fois
 // -> Generalement on y initilise les varibbles globales
 int couleur;
+int flag = 0;
 void setup()
 {
   BoardInit();
@@ -65,24 +66,45 @@ void loop()
   {
     
     case 0:
-    rouge2();
+    if((flag & 0x01) == 0)
+    {
+      flag = flag | 0x01;
+      rouge2();
+    }
+    
     break;
     
     case 1:
-    vert();
+    if((flag & 0x02) == 0)
+    {
+      flag = flag | 0x02;
+      vert();
+    }
     break;
     
     case 2:
-    bleu();
+    if((flag & 0x04) == 0)
+    {
+      flag = flag | 0x04;
+      bleu();
+    }
     break;
 
     case 3:
-    jauneAntoine();
+    if((flag & 0x08) == 0)
+    {
+      flag = flag | 0x08;
+      jauneAntoine();
+    }
     break;
     
     default:
     break;
   }
+  // if(flag & 0x0F == 0x0F)
+  // {
+  //   while(1);
+  // }
 //   #endif
 // //#####################################
 

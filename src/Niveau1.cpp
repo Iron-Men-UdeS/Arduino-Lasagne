@@ -26,7 +26,7 @@ int suivreLigne(void)
     int ligne = 0;
 
     previousTime = millis();
-    while (detectCouleur() == -1)
+    do
     {
         currentTime = millis();
         if ((currentTime - previousTime) >= INTERVALLE)
@@ -93,7 +93,7 @@ int suivreLigne(void)
             // Serial.println(i1);
             vitesseRoues(VITESSE_MOTEUR * i0, VITESSE_MOTEUR * i1);
         }
-    }
+    } while (detectCouleur() == -1);
     return detectCouleur();
 }
 
@@ -299,14 +299,18 @@ void bleu()
 
     // La parti ci-dessous fait faire un carrée au robot et le faire revenir dans le même sens qu'il était
     // Chaque arrête de carrée fera une longueur de 30cm et il va avancer à 50% de la vitesse max
+    ENCODER_Reset(GAUCHE);
+    ENCODER_Reset(DROITE);
+    avance(50, VITESSE_MOTEUR);
     tourne(45, 0.3, DROITE);
-    avance(30, 0.5);
-    for (int i = 0; i <= 2; i++)
-    {
-        tourne(90, 0.5, GAUCHE);
-        avance(30, 0.5);
-    }
-    tourne(135, 0.5, GAUCHE); // redressi le robot pour qu'il soit dans la même direction que au départ de la fonciton
+    avance(30, -VITESSE_MOTEUR);
+    tourne(90, VITESSE_MOTEUR, GAUCHE);
+    avance(30, -VITESSE_MOTEUR);
+    tourne(90, VITESSE_MOTEUR, DROITE);
+    avance(30, VITESSE_MOTEUR);
+    tourne(90, VITESSE_MOTEUR, GAUCHE);
+    avance(30, VITESSE_MOTEUR);
+    tourne(45, 0.5, DROITE); // redressi le robot pour qu'il soit dans la même direction que au départ de la fonciton
 
     // Les servomoteur sont activés pour être utiliser lors de la dance=============point pour le style;)
     //  SERVO_Enable(0);
@@ -534,40 +538,48 @@ void rouge2()
         MOTOR_SetSpeed(RIGHT, 0);
     }
 
-    Serial.println("retour : : " + String(retour));
+    //Serial.println("retour : : " + String(retour));
     avance(dist + 15, 0.5);
     avance(dist + 15, -0.5);
     ENCODER_Reset(LEFT);
     ENCODER_Reset(RIGHT);
     int dep = ENCODER_Read(LEFT);
+
     while (dep < retour)
     {
         MOTOR_SetSpeed(LEFT, 0.2);
         MOTOR_SetSpeed(RIGHT, -0.2);
         dep = ENCODER_Read(LEFT);
-        Serial.println("deplacement : " + String(dep));
-        Serial.println("retour : : " + String(retour));
+        // Serial.println("deplacement : " + String(dep));
+        // Serial.println("retour : : " + String(retour));
     }
-    MOTOR_SetSpeed(LEFT, 0);
-    MOTOR_SetSpeed(RIGHT, 0);
-    avance(25, VITESSE_MOTEUR);
+    currentmillis = millis();
+    while (millis() - currentmillis < 150)
+    {
+        MOTOR_SetSpeed(LEFT, 0);
+        MOTOR_SetSpeed(RIGHT, 0);
+    }
+
+    vitesseRoues(0, 0);
 }
 
 void jauneAntoine()
 {
-    float corr;
+    //float corr;
     float dist = detecDistance(DISTANCEA);
-    while (dist > 10)
+    while (dist > 15)
     { // 40 = valeur en cm peut-etre a changer
-        robotSetSpeed(0.2, 0, corr);
+        //robotSetSpeed(0.2, 0, corr);
+        vitesseRoues(0.2, 0.2);
         dist = detecDistance(DISTANCEA);
     }
+    vitesseRoues(0.0, 0.0);
     tourne(QUART_DE_TOUR, VITESSE_MOTEUR, GAUCHE);
-    avance(50, 0.5); // 40 = longueur du mur a ajusté
+    avance(40, 0.5); // 40 = longueur du mur a ajusté
     tourne(QUART_DE_TOUR, VITESSE_MOTEUR, DROITE);
-    avance(35, 0.5); // 50 = épaisseur du mur a ajusté
+    avance(55, 0.5); // 50 = épaisseur du mur a ajusté
     tourne(QUART_DE_TOUR, VITESSE_MOTEUR, DROITE);
-    avance(50, 0.5); // 40 = longueur du mur a ajusté
+    avance(40, 0.5); // 40 = longueur du mur a ajusté
     tourne(QUART_DE_TOUR, VITESSE_MOTEUR, GAUCHE);
 }
 /*******************************************************************************************
