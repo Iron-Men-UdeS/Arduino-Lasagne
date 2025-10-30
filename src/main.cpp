@@ -25,7 +25,11 @@ Fonctions d'initialisation (setup)
 // -> Se fait appeler seulement un fois
 // -> Generalement on y initilise les varibbles globales
 int couleur;
-int flag = 0;
+int flagR = 0;
+int flagV = 0;
+int flagB = 0;
+int flagJ = 0;
+int flagS = 0;
 void setup()
 {
   BoardInit();
@@ -60,51 +64,53 @@ void loop()
   // couleur = detectCouleur();
   // Serial.println(couleur);
   // delay(1000);
-
+  while(sifflet_5kHz() == false && flagS == 0){}
+  flagS = 1;
   int couleur = suivreLigne();
   switch (couleur)
   {
-    
     case 0:
-    if((flag & 0x01) == 0)
+    if(flagR == 0)
     {
-      flag = flag | 0x01;
+      flagR = 1;
+      inverseDEL(LED_ROUGE);
       rouge2();
     }
     
     break;
     
     case 1:
-    if((flag & 0x02) == 0)
+    if(flagV == 0)
     {
-      flag = flag | 0x02;
+      flagV = 1;
+      inverseDEL(LED_VERTE);
       vert();
     }
     break;
     
     case 2:
-    if((flag & 0x04) == 0)
+    if(flagB == 0)
     {
-      flag = flag | 0x04;
+      flagB = 1;
+      inverseDEL(LED_BLEUE);
       bleu();
     }
     break;
 
     case 3:
-    if((flag & 0x08) == 0)
+    if(flagJ == 0)
     {
-      flag = flag | 0x08;
+      flagJ = 1;
+      inverseDEL(LED_JAUNE);
       jauneAntoine();
     }
     break;
-    
-    default:
-    break;
   }
-  // if(flag & 0x0F == 0x0F)
-  // {
-  //   while(1);
-  // }
+  if(flagR == 1 && flagV == 1 && flagB == 1 && flagJ == 1)
+  {
+    eteindreToutesLesDELs();
+    while(1);
+  }
 //   #endif
 // //#####################################
 

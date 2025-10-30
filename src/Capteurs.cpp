@@ -286,7 +286,7 @@ bool sifflet_5kHz()
   // TODO verifier le fonctionnement avec le pourcentage d'écart
   float ratio = analogRead(BRUIT_AMBIENT) / analogRead(SIGNAL_5kHz) * 100;
 
-  if (ratio > 10)
+  if (ratio > 150)
   { // ecart est a vérifier dans différent contexte de bruit
     return true;
   }

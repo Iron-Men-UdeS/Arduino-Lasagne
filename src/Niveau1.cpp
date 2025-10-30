@@ -19,15 +19,29 @@ int suivreLigne(void)
 {
     unsigned long currentTime;
     unsigned long previousTime;
-
-    float i0 = 1; // Indice correcteur moteur gauche
-    float i1 = 1; // Indice correcteur moteur droit
+    static int flagR = 0;
+    static int flagV = 0;
+    static int flagB = 0;
+    static int flagJ = 0;
+    int couleur;
+    static float i0 = 1; // Indice correcteur moteur gauche
+    static float i1 = 1; // Indice correcteur moteur droit
 
     int ligne = 0;
 
     previousTime = millis();
-    do
+    couleur = detectCouleur();
+    if(flagR == 1){couleur = -1;}
+    if(flagV == 1){couleur = -1;}
+    if(flagB == 1){couleur = -1;}
+    if(flagJ == 1){couleur = -1;}
+    while (couleur == -1)
     {
+        couleur = detectCouleur();
+        if(couleur == COULEURROUGE){flagR = 1;}
+        if(couleur == COULEURVERT){flagV = 1;}
+        if(couleur == COULEURBLEU){flagB = 1;}
+        if(couleur == COULEURJAUNE){flagJ = 1;}
         currentTime = millis();
         if ((currentTime - previousTime) >= INTERVALLE)
         {
@@ -52,7 +66,7 @@ int suivreLigne(void)
                 break;
 
             case 0x04: // 000 100  Aucune correction
-                i0 = 0.90;
+                i0 = 0.95;
                 i1 = 1;
                 break;
 
@@ -63,7 +77,7 @@ int suivreLigne(void)
 
             case 0x08: // 001 000
                 i0 = 1;
-                i1 = 0.90;
+                i1 = 0.95;
                 // Serial.println("3");
                 break;
 
@@ -93,7 +107,7 @@ int suivreLigne(void)
             // Serial.println(i1);
             vitesseRoues(VITESSE_MOTEUR * i0, VITESSE_MOTEUR * i1);
         }
-    } while (detectCouleur() == -1);
+    }
     return detectCouleur();
 }
 
@@ -310,7 +324,9 @@ void bleu()
     avance(30, VITESSE_MOTEUR);
     tourne(90, VITESSE_MOTEUR, GAUCHE);
     avance(30, VITESSE_MOTEUR);
-    tourne(45, 0.5, DROITE); // redressi le robot pour qu'il soit dans la même direction que au départ de la fonciton
+    tourne(60, VITESSE_MOTEUR, DROITE); // redressi le robot pour qu'il soit dans la même direction que au départ de la fonciton
+    ENCODER_Reset(GAUCHE);
+    ENCODER_Reset(DROITE);
 
     // Les servomoteur sont activés pour être utiliser lors de la dance=============point pour le style;)
     //  SERVO_Enable(0);
@@ -559,8 +575,7 @@ void rouge2()
         MOTOR_SetSpeed(LEFT, 0);
         MOTOR_SetSpeed(RIGHT, 0);
     }
-
-    vitesseRoues(0, 0);
+    avance(15,VITESSE_MOTEUR);
 }
 
 void jauneAntoine()
@@ -579,8 +594,8 @@ void jauneAntoine()
     tourne(QUART_DE_TOUR, VITESSE_MOTEUR, DROITE);
     avance(55, 0.5); // 50 = épaisseur du mur a ajusté
     tourne(QUART_DE_TOUR, VITESSE_MOTEUR, DROITE);
-    avance(40, 0.5); // 40 = longueur du mur a ajusté
-    tourne(QUART_DE_TOUR, VITESSE_MOTEUR, GAUCHE);
+    avance(35, 0.5); // 40 = longueur du mur a ajusté
+    tourne(125, VITESSE_MOTEUR, GAUCHE);
 }
 /*******************************************************************************************
  * Auteur : Simon-Pierre Robert
