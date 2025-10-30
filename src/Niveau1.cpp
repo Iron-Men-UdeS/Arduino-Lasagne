@@ -299,14 +299,14 @@ void bleu()
 
     // La parti ci-dessous fait faire un carrée au robot et le faire revenir dans le même sens qu'il était
     // Chaque arrête de carrée fera une longueur de 30cm et il va avancer à 50% de la vitesse max
-    tourne(135, 0.3, DROITE);
+    tourne(45, 0.3, DROITE);
     avance(30, 0.5);
-    for (int i = 0; i < 3; i++)
+    for (int i = 0; i <= 2; i++)
     {
-        tourne(90, 0.5, DROITE);
+        tourne(90, 0.5, GAUCHE);
         avance(30, 0.5);
     }
-    tourne(30, 0.5, GAUCHE); // redressi le robot pour qu'il soit dans la même direction que au départ de la fonciton
+    tourne(135, 0.5, GAUCHE); // redressi le robot pour qu'il soit dans la même direction que au départ de la fonciton
 
     // Les servomoteur sont activés pour être utiliser lors de la dance=============point pour le style;)
     //  SERVO_Enable(0);
@@ -330,7 +330,11 @@ void bleu()
  ******************************************************************************************/
 void vert()
 {
+    tourne(30, VITESSE_MOTEUR, GAUCHE);
+    avance(45, VITESSE_MOTEUR);
+    tourne(30, VITESSE_MOTEUR, DROITE);
     avance(80, 0.7);
+    tourne(30, VITESSE_MOTEUR, DROITE);
 }
 
 // //amelioration possible faire un while jusqua ce que le suiveur de ligne renvoie un info pour dire qu,il troiver la ligne
@@ -508,61 +512,64 @@ void bouge2Bras(int posGauche, int posDroit)
 //     // delay(300);
 // }
 
-// void rouge2()
-// {
-//     float dist = detecDistance(DISTANCEA);
-//     int retour;
-//     while (dist > 30)
-//     { // 40 = valeur en cm peut-etre a changer
-//         MOTOR_SetSpeed(LEFT, -0.2);
-//         MOTOR_SetSpeed(RIGHT, 0.2);
-//         dist = detecDistance(DISTANCEA);
-//         retour = ENCODER_Read(RIGHT);
-//     }
-//     ENCODER_Reset(LEFT);
-//     ENCODER_Reset(RIGHT);
-//     double currentmillis = millis();
-//     while (millis() - currentmillis < 300)
-//     {
-//         MOTOR_SetSpeed(LEFT, 0);
-//         MOTOR_SetSpeed(RIGHT, 0);
-//     }
+void rouge2()
+{
+    float dist = detecDistance(DISTANCEA);
+    int retour;
+    ENCODER_Reset(LEFT);
+    ENCODER_Reset(RIGHT);
+    while (dist > 30)
+    { // 40 = valeur en cm peut-etre a changer
+        MOTOR_SetSpeed(LEFT, -0.2);
+        MOTOR_SetSpeed(RIGHT, 0.2);
+        dist = detecDistance(DISTANCEA);
+        retour = ENCODER_Read(RIGHT);
+    }
+    ENCODER_Reset(LEFT);
+    ENCODER_Reset(RIGHT);
+    double currentmillis = millis();
+    while (millis() - currentmillis < 300)
+    {
+        MOTOR_SetSpeed(LEFT, 0);
+        MOTOR_SetSpeed(RIGHT, 0);
+    }
 
-//     Serial.println("retour : : " + String(retour));
-//     avance(dist + 10, 0.5);
-//     avance(dist + 10, -0.5);
-//     ENCODER_Reset(LEFT);
-//     ENCODER_Reset(RIGHT);
-//     float dep = ENCODER_Read(LEFT);
-//     while (dep < retour)
-//     {
-//         MOTOR_SetSpeed(LEFT, 0.2);
-//         MOTOR_SetSpeed(RIGHT, -0.2);
-//         dep = ENCODER_Read(LEFT);
-//         Serial.println("deplacement : " + String(dep));
-//         Serial.println("retour : : " + String(retour));
-//     }
-//     MOTOR_SetSpeed(LEFT, 0);
-//     MOTOR_SetSpeed(RIGHT, 0);
-// }
+    Serial.println("retour : : " + String(retour));
+    avance(dist + 15, 0.5);
+    avance(dist + 15, -0.5);
+    ENCODER_Reset(LEFT);
+    ENCODER_Reset(RIGHT);
+    int dep = ENCODER_Read(LEFT);
+    while (dep < retour)
+    {
+        MOTOR_SetSpeed(LEFT, 0.2);
+        MOTOR_SetSpeed(RIGHT, -0.2);
+        dep = ENCODER_Read(LEFT);
+        Serial.println("deplacement : " + String(dep));
+        Serial.println("retour : : " + String(retour));
+    }
+    MOTOR_SetSpeed(LEFT, 0);
+    MOTOR_SetSpeed(RIGHT, 0);
+    avance(25, VITESSE_MOTEUR);
+}
 
-// void jauneAntoine()
-// {
-//     float corr;
-//     float dist = detecDistance(DISTANCEA);
-//     while (dist > 20)
-//     { // 40 = valeur en cm peut-etre a changer
-//         robotSetSpeed(0.2, 0, corr);
-//         dist = detecDistance(DISTANCEA);
-//     }
-//     tourne(QUART_DE_TOUR, 0.5, GAUCHE);
-//     avance(40, 0.5); // 40 = longueur du mur a ajusté
-//     tourne(QUART_DE_TOUR, 0.5, DROITE);
-//     avance(50, 0.5); // 50 = épaisseur du mur a ajusté
-//     tourne(QUART_DE_TOUR, 0.5, DROITE);
-//     avance(40, 0.5); // 40 = longueur du mur a ajusté
-//     tourne(QUART_DE_TOUR, 0.5, GAUCHE);
-// }
+void jauneAntoine()
+{
+    float corr;
+    float dist = detecDistance(DISTANCEA);
+    while (dist > 10)
+    { // 40 = valeur en cm peut-etre a changer
+        robotSetSpeed(0.2, 0, corr);
+        dist = detecDistance(DISTANCEA);
+    }
+    tourne(QUART_DE_TOUR, VITESSE_MOTEUR, GAUCHE);
+    avance(50, 0.5); // 40 = longueur du mur a ajusté
+    tourne(QUART_DE_TOUR, VITESSE_MOTEUR, DROITE);
+    avance(35, 0.5); // 50 = épaisseur du mur a ajusté
+    tourne(QUART_DE_TOUR, VITESSE_MOTEUR, DROITE);
+    avance(50, 0.5); // 40 = longueur du mur a ajusté
+    tourne(QUART_DE_TOUR, VITESSE_MOTEUR, GAUCHE);
+}
 /*******************************************************************************************
  * Auteur : Simon-Pierre Robert
  *

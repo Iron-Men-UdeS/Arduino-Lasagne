@@ -65,7 +65,7 @@ void loop()
   {
     
     case 0:
-    //rouge2();
+    rouge2();
     break;
     
     case 1:
@@ -77,7 +77,7 @@ void loop()
     break;
 
     case 3:
-    //jauneAntoine();
+    jauneAntoine();
     break;
     
     default:

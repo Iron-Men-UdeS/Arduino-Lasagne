@@ -61,9 +61,9 @@ void inverseDEL(int pin);
 void eteindreToutesLesDELs(void);
 bool mur();
 bool sifflet_5kHz();
-//float detecDistance(int pin);
+float detecDistance(int pin);
 //float detecDistanceLin(int pin);
-//float corrDist(int pin, float valeurCapteur);// a remettre
+float corrDist(int pin, float valeurCapteur);// a remettre
 //float calibreSuiveur(int pin);
 //int lireSuiveur(struct suiveur);
 #endif

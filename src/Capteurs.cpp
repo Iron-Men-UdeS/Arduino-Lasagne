@@ -295,3 +295,39 @@ bool sifflet_5kHz()
     return false;
   }
 }
+
+/*******************************************************************************************
+ * Auteur : Justin
+ * lit un capteur de distance, traduit les lectures 
+ * en distance (cm) 
+ * note: très précis de 10-40 cm, moins précis de 40-80, inutilisable en dessous de 10
+ * arguments: la pin du capteur à lire
+ * @return la distance en cm
+ ******************************************************************************************/
+float detecDistance(int pin){
+  int voltage = analogRead(pin);
+  for (int i=1;i<=7;i++){
+    voltage+=analogRead(pin);
+  }
+  voltage= ((double) voltage)/8;
+  return corrDist(pin,(float) (14994*pow(voltage, -1.173)));
+}
+
+/*******************************************************************************************
+ * Auteur : Justin
+ * corrige la valeur du capteur de distancce selon la 
+ * fonction invverse obtenue dans les tests d'étalonnage
+ * arguments: la pin du capteur dont proviennent les données, la valeur non corrigée (cm)
+ * @return la distance, corrigée, en cm
+ ******************************************************************************************/
+float corrDist (int pin, float valeurCapteur){
+  if (pin==DISTANCEA){
+    return (valeurCapteur+2.22)/1.272;
+  }
+  else if(pin==DISTANCEC){
+    return (valeurCapteur+4.3587)/1.3894;
+  }
+  else{
+    return 0;
+  }
+}
