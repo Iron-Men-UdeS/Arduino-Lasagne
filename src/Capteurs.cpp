@@ -1,8 +1,6 @@
 
 #include "Capteurs.h"
 
-// Variables
-
 // Suiveur de ligne
 int seuilGauche = 875;
 int seuilCentre = 875;
