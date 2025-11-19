@@ -214,23 +214,23 @@ int detectCouleur(void)
     // r *= 256; g *= 256; b *= 256;
 
     
-    if(red >= 700 && green >= 820)
+    if(red >= 920 && green >= 975 && (green/(float)blue)>=1.15)
     {
       return COULEURJAUNE;
     }
-    if(red >= green && red >= blue && red >= 700)
+    if(red >= 675 && red >= blue && (red/(float)blue) >= 1.2)
     {
       return COULEURROUGE;
     }
-    if(green >= blue && green >= red && green >= 850)
+    if(green >= 800 && (green/(float)red) >= 1.35 && (red/(float)blue) >= 0.7)
     {
        return COULEURVERT;
-    }
-    if(blue >= 700)
+ }
+    if(blue >= 650 && (blue/(float)red)>= 1.3 && (blue/(float)green) >= 0.95)
     {
       return COULEURBLEU;
     }
-    
+  
       return -1;
 }
 
