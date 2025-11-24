@@ -18,9 +18,9 @@
 
 //DELS
 #define LED_ROUGE 46
-#define LED_VERTE 44
+#define LED_VERTE 48
 #define LED_JAUNE 47
-#define LED_BLEUE 45
+#define LED_BLEUE 49
 
 //Capteur couleur
 #define COULEURROUGE 0

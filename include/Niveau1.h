@@ -6,7 +6,6 @@
 #include <LibRobus.h>
 #include "Capteurs.h"
 #include "Mouvement.h"
-#include "Capteurs.h"
 // Defines
 #define INTERVALLE 50
 #define VITESSE_MOTEUR 0.2
