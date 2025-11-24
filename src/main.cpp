@@ -196,6 +196,8 @@ if (couleur==COULEURBLEU&&(clockN-clockB>10000||clockB==0)){    //Cooldown
   flagBleu=1;
   clockB=millis();
   }
+
+if (flagBleuRecu==1){digitalWrite(LED_BLEUE,LOW);delay(5000);digitalWrite(LED_BLEUE,HIGH);}
 }
 
 
@@ -209,10 +211,8 @@ if (couleur==COULEURBLEU&&(clockN-clockB>10000||clockB==0)){    //Cooldown
  * Pas de return juste à mettre la fct dans le loop
 ******************************************************************************************/
 void delBonus(){
-if(flagBleu==1){digitalWrite(LED_BLEUE,LOW);}
 if(flagRouge==1){digitalWrite(LED_ROUGE,LOW);}
 if(flagVert==1){digitalWrite(LED_VERTE,LOW);}
-if(flagBleu==0){digitalWrite(LED_BLEUE,HIGH);}
 if(flagRouge==0){digitalWrite(LED_ROUGE,HIGH);}
 if(flagVert==0){digitalWrite(LED_VERTE,HIGH);}
 if(etatJeu==3){digitalWrite(LED_BLEUE,LOW);digitalWrite(LED_ROUGE,LOW);digitalWrite(LED_VERTE,LOW);digitalWrite(LED_JAUNE,LOW);while(true){delay(10);}}
