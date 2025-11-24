@@ -44,7 +44,7 @@ int flagBleu=1;
 int flagJaune=0;
 int etatJeu=2;
 uint8_t listeLasagne[4];
-uint8_t listeGarfield[2];
+uint8_t listeGarfield[2] = {1,2};
 unsigned long clockR=0;
 unsigned long clockV=0;
 unsigned long clockB=0;
@@ -388,8 +388,9 @@ valeurs via le esp32
 Fonctions de boucle infini (loop())
 *****************************************************************************/
 void loop()
-{   litUART(listeGarfield,4);
-    receptionListe(); 
+{   
+    litUART(listeGarfield,4);
+    //receptionListe(); 
     // flagBumperSet();
     // bananeJaune();
     // malusRouge();
@@ -397,11 +398,11 @@ void loop()
     // gelBleu();
     // setEtatJeu(); //DOIT ETRE AVANT DELBONUS()
     // delBonus();
-    creationListe();    //Doit être après les variables
-    envoieTrame(listeLasagne);
+    //creationListe();    //Doit être après les variables
+    //envoieTrame(listeLasagne);
     // litUART(manette, 6);
     // deplacementmanette();
-    Serial.print(flagBleuRecu);
-Serial.print(etatJeuRecu);
+    Serial.print(listeGarfield[0]);
+Serial.println(listeGarfield[1]);
     
 }
