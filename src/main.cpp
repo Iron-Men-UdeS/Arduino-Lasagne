@@ -39,13 +39,58 @@ int flagRouge=0;
 int flagVert=0;
 int flagBleu=0;
 int flagJaune=0;
+int etatJeu=0;
+uint8_t listeLasagne[4];
+uint8_t listeGarfield[4];
 unsigned long clockR=0;
 unsigned long clockV=0;
 unsigned long clockB=0;
 unsigned long clockJ=0;
 unsigned long clockN=0;
 
+//Flags simulant les données du mvmnt
+int distanceX=20;
+int distanceY=720;
 
+//Les recu par comm
+int distanceXRecu=0;
+int distanceYRecu=0;
+int flagBleuRecu=0;
+int etatJeuRecu=0;
+
+
+/*******************************************************************************************
+ * Auteur : Raphael
+ *
+ * Crée une liste avec les variables qu'on va communiquer
+ * 
+ * @return Tableau [x,y,gel,état du jeu]
+******************************************************************************************/
+void creationListe(){
+  listeLasagne[0] = distanceX;
+  listeLasagne[1] = distanceY;
+  listeLasagne[2] = flagBleu;
+  listeLasagne[3] = etatJeu;
+}
+
+
+/*******************************************************************************************
+ * Auteur : Raphael
+ *
+ * Définit les variables avec la liste reçu
+ * 
+ * @return distanceXRecu
+ * @return distanceYRecu
+ * @return flagBleuRecu
+ * @return etatJeuRecu
+ * 
+******************************************************************************************/
+void receptionListe(){
+distanceXRecu=listeGarfield[0];
+distanceYRecu=listeGarfield[1];
+flagBleuRecu=listeGarfield[2];
+etatJeuRecu=listeGarfield[3];
+}
 /*******************************************************************************************
  * Auteur : Raphael
  *
@@ -361,12 +406,14 @@ Fonctions de boucle infini (loop())
 *****************************************************************************/
 void loop()
 {
+    receptionListe(); 
     flagBumperSet();
     bananeJaune();
     malusRouge();
     bonusVert();
     gelBleu();
     delBonus();
+    creationListe();    //Doit être après les variables
     litUART(manette, 6);
     deplacementmanette();
 }
