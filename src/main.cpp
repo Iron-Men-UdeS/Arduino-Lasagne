@@ -47,17 +47,37 @@ unsigned long clockV=0;
 unsigned long clockB=0;
 unsigned long clockJ=0;
 unsigned long clockN=0;
+unsigned long debutJeu=0;
+
+
 
 //Flags simulant les données du mvmnt
-int distanceX=20;
-int distanceY=720;
+int positionX=20;
+int positionY=720;
 
 //Les recu par comm
-int distanceXRecu=0;
-int distanceYRecu=0;
+int positionXRecu=0;
+int positionYRecu=0;
 int flagBleuRecu=0;
 int etatJeuRecu=0;
 
+
+/*******************************************************************************************
+ * Auteur : Raphael
+ *
+ * Définit la variable etatJeu
+ * 
+ * 0=Jeu pas débuté
+ * 1=Débuté
+ * 2=Débuté mais bumper ON
+ * 3=Terminé car deux bumper ON
+******************************************************************************************/
+void setEtatJeu(){
+if(positionX!=0 && flagBumper==0){etatJeu=1; debutJeu=millis();}
+if(positionX!=0 && flagBumper==1){etatJeu=2;}
+if(positionX!=0 && flagBumper==1 && etatJeuRecu==2){etatJeu=3;}
+if(millis()-debutJeu>60000){etatJeu=3;}
+}
 
 /*******************************************************************************************
  * Auteur : Raphael
@@ -67,8 +87,8 @@ int etatJeuRecu=0;
  * @return Tableau [x,y,gel,état du jeu]
 ******************************************************************************************/
 void creationListe(){
-  listeLasagne[0] = distanceX;
-  listeLasagne[1] = distanceY;
+  listeLasagne[0] = positionX;
+  listeLasagne[1] = positionY;
   listeLasagne[2] = flagBleu;
   listeLasagne[3] = etatJeu;
 }
@@ -79,15 +99,15 @@ void creationListe(){
  *
  * Définit les variables avec la liste reçu
  * 
- * @return distanceXRecu
- * @return distanceYRecu
+ * @return positionXRecu
+ * @return positionYRecu
  * @return flagBleuRecu
  * @return etatJeuRecu
  * 
 ******************************************************************************************/
 void receptionListe(){
-distanceXRecu=listeGarfield[0];
-distanceYRecu=listeGarfield[1];
+positionXRecu=listeGarfield[0];
+positionYRecu=listeGarfield[1];
 flagBleuRecu=listeGarfield[2];
 etatJeuRecu=listeGarfield[3];
 }
@@ -194,6 +214,7 @@ if(flagVert==1){digitalWrite(LED_VERTE,LOW);}
 if(flagBleu==0){digitalWrite(LED_BLEUE,HIGH);}
 if(flagRouge==0){digitalWrite(LED_ROUGE,HIGH);}
 if(flagVert==0){digitalWrite(LED_VERTE,HIGH);}
+if(etatJeu==3){digitalWrite(LED_BLEUE,LOW);digitalWrite(LED_ROUGE,LOW);digitalWrite(LED_VERTE,LOW);digitalWrite(LED_JAUNE,LOW);while(true){delay(10);}}
 }
 
 /*******************************************************************************************
