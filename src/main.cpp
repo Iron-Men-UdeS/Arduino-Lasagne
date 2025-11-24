@@ -73,9 +73,9 @@ int etatJeuRecu=0;
  * 3=Terminé car deux bumper ON
 ******************************************************************************************/
 void setEtatJeu(){
-if(positionX!=0 && flagBumper==0){etatJeu=1; debutJeu=millis();}
-if(positionX!=0 && flagBumper==1){etatJeu=2;}
-if(positionX!=0 && flagBumper==1 && etatJeuRecu==2){etatJeu=3;}
+if((positionX!=0 || positionY!=0) && flagBumper==0){etatJeu=1; debutJeu=millis();}
+if((positionX!=0 || positionY!=0) && flagBumper==1){etatJeu=2;}
+if((positionX!=0 || positionY!=0) && flagBumper==1 && etatJeuRecu==2){etatJeu=3;}
 if(millis()-debutJeu>60000){etatJeu=3;}
 }
 
@@ -433,6 +433,7 @@ void loop()
     malusRouge();
     bonusVert();
     gelBleu();
+    setEtatJeu(); //DOIT ETRE AVANT DELBONUS()
     delBonus();
     creationListe();    //Doit être après les variables
     litUART(manette, 6);
