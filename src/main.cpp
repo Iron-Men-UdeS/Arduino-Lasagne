@@ -40,9 +40,9 @@ int flagBumper=0;
 int couleur=0;
 int flagRouge=0;
 int flagVert=0;
-int flagBleu=0;
+int flagBleu=1;
 int flagJaune=0;
-int etatJeu=0;
+int etatJeu=2;
 uint8_t listeLasagne[4];
 uint8_t listeGarfield[2];
 unsigned long clockR=0;
@@ -56,11 +56,9 @@ unsigned long debutJeu=0;
 
 //Flags simulant les données du mvmnt
 int positionX=20;
-int positionY=720;
+int positionY=50;
 
 //Les recu par comm
-int positionXRecu=43;
-int positionYRecu=21;
 int flagBleuRecu=0;
 int etatJeuRecu=0;
 
@@ -390,17 +388,20 @@ valeurs via le esp32
 Fonctions de boucle infini (loop())
 *****************************************************************************/
 void loop()
-{   litUART(listeGarfield,6);
+{   litUART(listeGarfield,4);
     receptionListe(); 
-    flagBumperSet();
-    bananeJaune();
-    malusRouge();
-    bonusVert();
-    gelBleu();
-    setEtatJeu(); //DOIT ETRE AVANT DELBONUS()
-    delBonus();
+    // flagBumperSet();
+    // bananeJaune();
+    // malusRouge();
+    // bonusVert();
+    // gelBleu();
+    // setEtatJeu(); //DOIT ETRE AVANT DELBONUS()
+    // delBonus();
     creationListe();    //Doit être après les variables
     envoieTrame(listeLasagne);
-    litUART(manette, 6);
-    deplacementmanette();
+    // litUART(manette, 6);
+    // deplacementmanette();
+    Serial.print(flagBleuRecu);
+Serial.print(etatJeuRecu);
+    
 }
