@@ -19,6 +19,8 @@ uint8_t manette[5] = {0, 0, 0, 0, 0};
 // [2]-> joystick(0-100, 50 est la valeur ou le robot ne tourne pas)
 // [3]-> dpad (up->1, down->2, gauche->8, droite->4)
 // [4]-> checksum (verification(addition de toutes les valeurs))
+
+
 void setup()
 {
     BoardInit();
@@ -42,7 +44,7 @@ int flagBleu=0;
 int flagJaune=0;
 int etatJeu=0;
 uint8_t listeLasagne[4];
-uint8_t listeGarfield[4];
+uint8_t listeGarfield[2];
 unsigned long clockR=0;
 unsigned long clockV=0;
 unsigned long clockB=0;
@@ -63,6 +65,7 @@ int flagBleuRecu=0;
 int etatJeuRecu=0;
 
 
+
 /*******************************************************************************************
  * Auteur : Alexandre Dionne
  *
@@ -71,32 +74,7 @@ int etatJeuRecu=0;
  * @param trame (Tableau uint8_t) Addresse du tableau pour la trame recu
  * @param sizeTrame (uint8_t) longueur de la trame a recevoir (+2 pour start et checksum)
  ******************************************************************************************/
-void litUART(uint8_t *trame, uint8_t sizeTrame)
-{
-    int somme = 0;
-    uint8_t temporaire[sizeTrame - 1];
-    int i;
 
-    if (Serial1.available() >= sizeTrame)
-    {
-        Serial1.readBytes(temporaire, 1);
-        if (temporaire[0] == 0x24)
-        {
-            Serial1.readBytes(temporaire, sizeTrame - 1);
-            for (i = 0; i < sizeTrame - 2; i++)
-            {
-                somme = somme + temporaire[i];
-            }
-            if (temporaire[sizeTrame - 2] == somme)
-            {
-                for (i = 0; i < sizeTrame - 2; i++)
-                {
-                    trame[i] = temporaire[i];
-                }
-            }
-        }
-    }
-}
 
 /*******************************************************************************************
  * Auteur : Alexandre Dionne
@@ -112,9 +90,9 @@ void envoieTrame(uint8_t *trame)
     {
         somme = somme + trame[i];
     }
-    Serial.write(0x24);
-    Serial.write(trame, sizeof(trame));
-    Serial.write(somme);
+    Serial1.write(0x24);
+    Serial1.write(trame, sizeof(trame));
+    Serial1.write(somme);
 }
 
 
@@ -163,10 +141,8 @@ void creationListe(){
  * 
 ******************************************************************************************/
 void receptionListe(){
-positionXRecu=listeGarfield[0];
-positionYRecu=listeGarfield[1];
-flagBleuRecu=listeGarfield[2];
-etatJeuRecu=listeGarfield[3];
+flagBleuRecu=listeGarfield[0];
+etatJeuRecu=listeGarfield[1];
 }
 /*******************************************************************************************
  * Auteur : Raphael
@@ -414,7 +390,7 @@ valeurs via le esp32
 Fonctions de boucle infini (loop())
 *****************************************************************************/
 void loop()
-{   litUART(listeGarfield,5);
+{   litUART(listeGarfield,6);
     receptionListe(); 
     flagBumperSet();
     bananeJaune();
