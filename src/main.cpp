@@ -33,7 +33,7 @@ void setup()
     digitalWrite(LED_BLEUE, HIGH);
     digitalWrite(LED_ROUGE, HIGH);
 }
-
+int flagBumper=0;
 int couleur=0;
 int flagRouge=0;
 int flagVert=0;
@@ -151,6 +151,23 @@ if(flagRouge==0){digitalWrite(LED_ROUGE,HIGH);}
 if(flagVert==0){digitalWrite(LED_VERTE,HIGH);}
 }
 
+/*******************************************************************************************
+ * Auteur : Raphael
+ *
+ * Regarde l'état des bumpers
+ * 
+ * Défini flagBumper à 1 si un bumper est ON
+ ******************************************************************************************/
+  void flagBumperSet(){
+    bool bumpp=false;
+    if(ROBUS_IsBumper(0)){bumpp=true;}
+  if(ROBUS_IsBumper(1)){bumpp=true;}
+  if(ROBUS_IsBumper(2)){bumpp=true;}
+  if(ROBUS_IsBumper(3)){bumpp=true;}
+    if(bumpp){flagBumper=1;}
+    if(!bumpp){flagBumper=0;}
+}
+
 /*
 Auteur: Samuel B. Manelli
 Description: Permet le contrôle du robot à l'aide d'une manette. Reçois des
@@ -250,8 +267,6 @@ void deplacementmanette()
     }
 }
 
-<<<<<<< Updated upstream
-=======
 // int avance=0; //valeur recu par le esp32 (valeur au repos)
 // int recule=0;  //valeur recu par le esp32 (valeur au repos)
 // int joycon=50; //valeur recu par le esp32 (valeur au repos)
@@ -341,12 +356,12 @@ void deplacementmanette()
 // MOTOR_SetSpeed(GAUCHE,speedRecule*ratioG);
 //ecrit comme ca va surement creer des problemes puisque le code va faire avancer pour avance mais stoper pour recule
 
->>>>>>> Stashed changes
 /* ****************************************************************************
 Fonctions de boucle infini (loop())
 *****************************************************************************/
 void loop()
 {
+    flagBumperSet();
     bananeJaune();
     malusRouge();
     bonusVert();
