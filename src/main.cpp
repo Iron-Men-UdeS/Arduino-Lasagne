@@ -34,128 +34,169 @@ void setup()
     digitalWrite(LED_ROUGE, HIGH);
 }
 
-int couleur=0;
-int flagRouge=0;
-int flagVert=0;
-int flagBleu=0;
-int flagJaune=0;
-unsigned long clockR=0;
-unsigned long clockV=0;
-unsigned long clockB=0;
-unsigned long clockJ=0;
-unsigned long clockN=0;
-
+int couleur = 0;
+int flagRouge = 0;
+int flagVert = 0;
+int flagBleu = 0;
+int flagJaune = 0;
+unsigned long clockR = 0;
+unsigned long clockV = 0;
+unsigned long clockB = 0;
+unsigned long clockJ = 0;
+unsigned long clockN = 0;
 
 /*******************************************************************************************
  * Auteur : Raphael
  *
  * Renvoie le flag rouge selon la couleur et les cooldown
- * 
+ *
  * Pas de return mais joue sur la variable globale flagRouge et les clockN et clockR
-******************************************************************************************/
-void malusRouge(){
+ ******************************************************************************************/
+void malusRouge()
+{
 
-couleur=detectCouleur();
-clockN=millis();
+    couleur = detectCouleur();
+    clockN = millis();
 
-if(clockN-clockR>5000){flagRouge=0;}  //Durée du bonus/malus
+    if (clockN - clockR > 5000)
+    {
+        flagRouge = 0;
+    } // Durée du bonus/malus
 
-if (couleur==COULEURROUGE&&(clockN-clockR>10000||clockR==0)){     //Cooldown 
-  flagRouge=1;
-  clockR=millis();
-  }
+    if (couleur == COULEURROUGE && (clockN - clockR > 10000 || clockR == 0))
+    { // Cooldown
+        flagRouge = 1;
+        clockR = millis();
+    }
 }
-
 
 /*******************************************************************************************
  * Auteur : Raphael
  *
  * Renvoie le flag vert selon la couleur et les cooldown
- * 
+ *
  * Pas de return mais joue sur la variable globale flagVert et les clockN et clockV
-******************************************************************************************/
-void bonusVert(){
+ ******************************************************************************************/
+void bonusVert()
+{
 
-couleur=detectCouleur();
-clockN=millis();
+    couleur = detectCouleur();
+    clockN = millis();
 
-if(clockN-clockV>5000){flagVert=0;}             //Durée du bonus/malus
+    if (clockN - clockV > 5000)
+    {
+        flagVert = 0;
+    } // Durée du bonus/malus
 
-if (couleur==COULEURVERT&&(clockN-clockV>10000||clockV==0)){     //Cooldown 
-  flagVert=1;
-  clockV=millis();
-  }
+    if (couleur == COULEURVERT && (clockN - clockV > 10000 || clockV == 0))
+    { // Cooldown
+        flagVert = 1;
+        clockV = millis();
+    }
 }
 
 /*******************************************************************************************
  * Auteur : Raphael
  *
  * Renvoie le flag jaune selon la couleur et les cooldown
- * 
+ *
  * Pas de return mais joue sur la variable globale flagJaune et les clockN et clockJ
-******************************************************************************************/
-void bananeJaune(){
+ ******************************************************************************************/
+void bananeJaune()
+{
 
-couleur=detectCouleur();
-clockN=millis();
+    couleur = detectCouleur();
+    clockN = millis();
 
-if (couleur==COULEURJAUNE&&(clockN-clockJ>7000||clockJ==0)){    //Cooldown 
-  flagJaune=1;
-  while(flagJaune==1){
-  digitalWrite(LED_JAUNE,LOW);
-  tourne(762,0.4,DROITE);
-  digitalWrite(LED_JAUNE,HIGH);
-  flagJaune=0;
-  clockJ=millis();
-  }
-}
- else if (couleur!=COULEURJAUNE){flagJaune=0;}
+    if (couleur == COULEURJAUNE && (clockN - clockJ > 7000 || clockJ == 0))
+    { // Cooldown
+        flagJaune = 1;
+        while (flagJaune == 1)
+        {
+            digitalWrite(LED_JAUNE, LOW);
+            tourne(762, 0.4, DROITE);
+            digitalWrite(LED_JAUNE, HIGH);
+            flagJaune = 0;
+            clockJ = millis();
+        }
+    }
+    else if (couleur != COULEURJAUNE)
+    {
+        flagJaune = 0;
+    }
 }
 
 /*******************************************************************************************
  * Auteur : Raphael
  *
  * Renvoie le flag bleu selon la couleur et les cooldown
- * 
+ *
  * Pas de return mais joue sur la variable globale flagBleu et les clockN et clockB
-******************************************************************************************/
-void gelBleu(){
+ ******************************************************************************************/
+void gelBleu()
+{
 
-couleur=detectCouleur();
-clockN=millis();
+    couleur = detectCouleur();
+    clockN = millis();
 
-if(clockN-clockB>5000){flagBleu=0;}         //Durée du bonus/malus
+    if (clockN - clockB > 5000)
+    {
+        flagBleu = 0;
+    } // Durée du bonus/malus
 
-if (couleur==COULEURBLEU&&(clockN-clockB>10000||clockB==0)){    //Cooldown 
-  flagBleu=1;
-  clockB=millis();
-  }
+    if (couleur == COULEURBLEU && (clockN - clockB > 10000 || clockB == 0))
+    { // Cooldown
+        flagBleu = 1;
+        clockB = millis();
+    }
 }
-
 
 /*******************************************************************************************
  * Auteur : Raphael
  *
  * Regarde quels flags des bonus/malus sont ON et allume la DEL durant la durée du flag
- * 
+ *
  * Jaune pas inclus car dans sa fct
- * 
+ *
  * Pas de return juste à mettre la fct dans le loop
-******************************************************************************************/
-void delBonus(){
-if(flagBleu==1){digitalWrite(LED_BLEUE,LOW);}
-if(flagRouge==1){digitalWrite(LED_ROUGE,LOW);}
-if(flagVert==1){digitalWrite(LED_VERTE,LOW);}
-if(flagBleu==0){digitalWrite(LED_BLEUE,HIGH);}
-if(flagRouge==0){digitalWrite(LED_ROUGE,HIGH);}
-if(flagVert==0){digitalWrite(LED_VERTE,HIGH);}
+ ******************************************************************************************/
+void delBonus()
+{
+    if (flagBleu == 1)
+    {
+        digitalWrite(LED_BLEUE, LOW);
+    }
+    if (flagRouge == 1)
+    {
+        digitalWrite(LED_ROUGE, LOW);
+    }
+    if (flagVert == 1)
+    {
+        digitalWrite(LED_VERTE, LOW);
+    }
+    if (flagBleu == 0)
+    {
+        digitalWrite(LED_BLEUE, HIGH);
+    }
+    if (flagRouge == 0)
+    {
+        digitalWrite(LED_ROUGE, HIGH);
+    }
+    if (flagVert == 0)
+    {
+        digitalWrite(LED_VERTE, HIGH);
+    }
 }
 
-/*
+/*************************************************
 Auteur: Samuel B. Manelli
 Description: Permet le contrôle du robot à l'aide d'une manette. Reçois des
 valeurs via le esp32
-*/
+********************************************************/
+unsigned long lastDirectionChange = 0;
+int lastDirection = 0;              // 1 = avant, -1 = arrière, 0 = stop
+unsigned long delayDirection = 400; // ms
+
 void deplacementmanette()
 {
     float speedAvance = float(manette[0]) / 100.0;
@@ -192,7 +233,7 @@ void deplacementmanette()
             // mettre un interval au lieu d'une valeur fixe pour contre le driff
         }
 
-        // permet de limiter la vitesse max
+        // permet de limiter la vitesse vers l'avant max
         if (speedAvance > 0.5 && flagRouge == flagVert)
         {
             speedAvance = maxSpeedAvance;
@@ -206,17 +247,17 @@ void deplacementmanette()
             speedAvance = maxSpeedRouge;
         }
         // permet de limiter la vitesse de reculons max
-        if (speedRecule < -0.5 && flagRouge == flagVert)
+        if (speedRecule > 0.5 && flagRouge == flagVert)
         {
-            speedRecule = -maxSpeedRecule;
+            speedRecule = maxSpeedRecule;
         }
-        if (speedRecule < -0.5 && flagRouge == 0 && flagVert == 1)
+        if (speedRecule > 0.5 && flagRouge == 0 && flagVert == 1)
         {
-            speedRecule = -maxSpeedVert;
+            speedRecule = maxSpeedVert;
         }
-        if (speedRecule < -0.5 && flagRouge == 1 && flagVert == 0)
+        if (speedRecule > 0.5 && flagRouge == 1 && flagVert == 0)
         {
-            speedRecule = -maxSpeedRouge;
+            speedRecule = maxSpeedRouge;
         }
 
         if (speedAvance < speedRecule)
@@ -245,8 +286,33 @@ void deplacementmanette()
         {
             vitesseGauche = -0.2;
         }
+        // --- DÉTERMINATION DE LA DIRECTION FINALE ---
+        int currentDirection = 0;
+
+        if (vitesseDroite > 0 || vitesseGauche > 0)
+            currentDirection = 1;
+        else if (vitesseDroite < 0 || vitesseGauche < 0)
+            currentDirection = -1;
+
+        // --- DÉTECTION D'INVERSION ---
+        if (currentDirection != 0 && currentDirection != lastDirection)
+        {
+            lastDirectionChange = millis();
+            lastDirection = currentDirection;
+        }
+
+        // --- BLOCAGE TEMPORAIRE ---
+        if (millis() - lastDirectionChange < delayDirection)
+        {
+            MOTOR_SetSpeed(DROITE, 0);
+            MOTOR_SetSpeed(GAUCHE, 0);
+            return;
+        }
+
         MOTOR_SetSpeed(DROITE, vitesseDroite);
         MOTOR_SetSpeed(GAUCHE, vitesseGauche);
+        // Serial.println(vitesseDroite);
+        // Serial.println(vitesseGauche);
     }
 }
 
