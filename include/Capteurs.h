@@ -44,16 +44,7 @@
 #define CMPT 23.93895
 // Variables
 //position à l'aide des encodeurs
-double vitang=0;
-double dist=DIST;
-double temps= 0;
-double temps_prec= 0;
-double vit1=0;
-double vit2=0;
-double dep1=0;
-double dep2=0;
-double cx=0;
-double cy=0;
+
 struct position{
   double x = 0;
   double y = 0;

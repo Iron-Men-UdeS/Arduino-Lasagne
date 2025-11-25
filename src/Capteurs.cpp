@@ -6,6 +6,16 @@ int seuilGauche = 875;
 int seuilCentre = 875;
 int seuilDroite = 875;
 
+double vitang=0;
+double dist=DIST;
+double temps= 0;
+double temps_prec= 0;
+double vit1=0;
+double vit2=0;
+double dep1=0;
+double dep2=0;
+double cx=0;
+double cy=0;
 
 
 // Capteur de couleur test
