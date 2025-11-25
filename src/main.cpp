@@ -9,10 +9,12 @@ Date: 11/13/2025
 Inclure les librairies de functions que vous voulez utiliser
 **************************************************************************** */
 #include "main.h"
+//#include "Capteurs.h"
 /* ****************************************************************************
 Fonctions d'initialisation (setup)
 **************************************************************************** */
 uint8_t manette[5] = {0, 0, 0, 0, 0};
+position robot;
 // []-> start condition ($)
 // [0]-> avance (0-100)
 // [1]-> recule (0-100)
@@ -34,6 +36,16 @@ void setup()
     digitalWrite(LED_ROUGE, HIGH);
 }
 
+// int couleur = 0;
+// int flagRouge = 0;
+// int flagVert = 0;
+// int flagBleu = 0;
+// int flagJaune = 0;
+// unsigned long clockR = 0;
+// unsigned long clockV = 0;
+// unsigned long clockB = 0;
+// unsigned long clockJ = 0;
+// unsigned long clockN = 0;
 
 /*******************************************************************************************
  * Auteur : Raphael
@@ -42,23 +54,23 @@ void setup()
  *
  * Pas de return mais joue sur la variable globale flagRouge et les clockN et clockR
  ******************************************************************************************/
-void malusRouge()
-{
+// void malusRouge()
+// {
 
-    couleur = detectCouleur();
-    clockN = millis();
+//     couleur = detectCouleur();
+//     clockN = millis();
 
-    if (clockN - clockR > 5000)
-    {
-        flagRouge = 0;
-    } // Durée du bonus/malus
+//     if (clockN - clockR > 5000)
+//     {
+//         flagRouge = 0;
+//     } // Durée du bonus/malus
 
-    if (couleur == COULEURROUGE && (clockN - clockR > 10000 || clockR == 0))
-    { // Cooldown
-        flagRouge = 1;
-        clockR = millis();
-    }
-}
+//     if (couleur == COULEURROUGE && (clockN - clockR > 10000 || clockR == 0))
+//     { // Cooldown
+//         flagRouge = 1;
+//         clockR = millis();
+//     }
+// }
 
 /*******************************************************************************************
  * Auteur : Raphael
@@ -67,23 +79,23 @@ void malusRouge()
  *
  * Pas de return mais joue sur la variable globale flagVert et les clockN et clockV
  ******************************************************************************************/
-void bonusVert()
-{
+// void bonusVert()
+// {
 
-    couleur = detectCouleur();
-    clockN = millis();
+//     couleur = detectCouleur();
+//     clockN = millis();
 
-    if (clockN - clockV > 5000)
-    {
-        flagVert = 0;
-    } // Durée du bonus/malus
+//     if (clockN - clockV > 5000)
+//     {
+//         flagVert = 0;
+//     } // Durée du bonus/malus
 
-    if (couleur == COULEURVERT && (clockN - clockV > 10000 || clockV == 0))
-    { // Cooldown
-        flagVert = 1;
-        clockV = millis();
-    }
-}
+//     if (couleur == COULEURVERT && (clockN - clockV > 10000 || clockV == 0))
+//     { // Cooldown
+//         flagVert = 1;
+//         clockV = millis();
+//     }
+// }
 
 /*******************************************************************************************
  * Auteur : Raphael
@@ -92,29 +104,29 @@ void bonusVert()
  *
  * Pas de return mais joue sur la variable globale flagJaune et les clockN et clockJ
  ******************************************************************************************/
-void bananeJaune()
-{
+// void bananeJaune()
+// {
 
-    couleur = detectCouleur();
-    clockN = millis();
+//     couleur = detectCouleur();
+//     clockN = millis();
 
-    if (couleur == COULEURJAUNE && (clockN - clockJ > 7000 || clockJ == 0))
-    { // Cooldown
-        flagJaune = 1;
-        while (flagJaune == 1)
-        {
-            digitalWrite(LED_JAUNE, LOW);
-            tourne(762, 0.4, DROITE);
-            digitalWrite(LED_JAUNE, HIGH);
-            flagJaune = 0;
-            clockJ = millis();
-        }
-    }
-    else if (couleur != COULEURJAUNE)
-    {
-        flagJaune = 0;
-    }
-}
+//     if (couleur == COULEURJAUNE && (clockN - clockJ > 7000 || clockJ == 0))
+//     { // Cooldown
+//         flagJaune = 1;
+//         while (flagJaune == 1)
+//         {
+//             digitalWrite(LED_JAUNE, LOW);
+//             tourne(762, 0.4, DROITE);
+//             digitalWrite(LED_JAUNE, HIGH);
+//             flagJaune = 0;
+//             clockJ = millis();
+//         }
+//     }
+//     else if (couleur != COULEURJAUNE)
+//     {
+//         flagJaune = 0;
+//     }
+// }
 
 /*******************************************************************************************
  * Auteur : Raphael
@@ -123,23 +135,23 @@ void bananeJaune()
  *
  * Pas de return mais joue sur la variable globale flagBleu et les clockN et clockB
  ******************************************************************************************/
-void gelBleu()
-{
+// void gelBleu()
+// {
 
-    couleur = detectCouleur();
-    clockN = millis();
+//     couleur = detectCouleur();
+//     clockN = millis();
 
-    if (clockN - clockB > 5000)
-    {
-        flagBleu = 0;
-    } // Durée du bonus/malus
+//     if (clockN - clockB > 5000)
+//     {
+//         flagBleu = 0;
+//     } // Durée du bonus/malus
 
-    if (couleur == COULEURBLEU && (clockN - clockB > 10000 || clockB == 0))
-    { // Cooldown
-        flagBleu = 1;
-        clockB = millis();
-    }
-}
+//     if (couleur == COULEURBLEU && (clockN - clockB > 10000 || clockB == 0))
+//     { // Cooldown
+//         flagBleu = 1;
+//         clockB = millis();
+//     }
+// }
 
 /*******************************************************************************************
  * Auteur : Raphael
@@ -150,33 +162,33 @@ void gelBleu()
  *
  * Pas de return juste à mettre la fct dans le loop
  ******************************************************************************************/
-void delBonus()
-{
-    if (flagBleu == 1)
-    {
-        digitalWrite(LED_BLEUE, LOW);
-    }
-    if (flagRouge == 1)
-    {
-        digitalWrite(LED_ROUGE, LOW);
-    }
-    if (flagVert == 1)
-    {
-        digitalWrite(LED_VERTE, LOW);
-    }
-    if (flagBleu == 0)
-    {
-        digitalWrite(LED_BLEUE, HIGH);
-    }
-    if (flagRouge == 0)
-    {
-        digitalWrite(LED_ROUGE, HIGH);
-    }
-    if (flagVert == 0)
-    {
-        digitalWrite(LED_VERTE, HIGH);
-    }
-}
+// void delBonus()
+// {
+//     if (flagBleu == 1)
+//     {
+//         digitalWrite(LED_BLEUE, LOW);
+//     }
+//     if (flagRouge == 1)
+//     {
+//         digitalWrite(LED_ROUGE, LOW);
+//     }
+//     if (flagVert == 1)
+//     {
+//         digitalWrite(LED_VERTE, LOW);
+//     }
+//     if (flagBleu == 0)
+//     {
+//         digitalWrite(LED_BLEUE, HIGH);
+//     }
+//     if (flagRouge == 0)
+//     {
+//         digitalWrite(LED_ROUGE, HIGH);
+//     }
+//     if (flagVert == 0)
+//     {
+//         digitalWrite(LED_VERTE, HIGH);
+//     }
+// }
 
 /*************************************************
 Auteur: Samuel B. Manelli
@@ -224,28 +236,28 @@ void deplacementmanette()
         }
 
         // permet de limiter la vitesse vers l'avant max
-        if (speedAvance > 0.5 && flagRouge == flagVert)
+        if (speedAvance > 0.5 /*&& flagRouge == flagVert*/)
         {
             speedAvance = maxSpeedAvance;
         }
-        if (speedAvance > 0.5 && flagRouge == 0 && flagVert == 1)
+        if (speedAvance > 0.5/*  && flagRouge == 0 && flagVert == 1*/)
         {
             speedAvance = maxSpeedVert;
         }
-        if (speedAvance > 0.5 && flagRouge == 1 && flagVert == 0)
+        if (speedAvance > 0.5 /*&& flagRouge == 1 && flagVert == 0*/)
         {
             speedAvance = maxSpeedRouge;
         }
         // permet de limiter la vitesse de reculons max
-        if (speedRecule > 0.5 && flagRouge == flagVert)
+        if (speedRecule > 0.5 /*&&flagRouge == flagVert*/)
         {
             speedRecule = maxSpeedRecule;
         }
-        if (speedRecule > 0.5 && flagRouge == 0 && flagVert == 1)
+        if (speedRecule > 0.5 /*&&flagRouge == 0 && flagVert == 1*/)
         {
             speedRecule = maxSpeedVert;
         }
-        if (speedRecule > 0.5 && flagRouge == 1 && flagVert == 0)
+        if (speedRecule > 0.5 /*&&flagRouge == 1 && flagVert == 0*/)
         {
             speedRecule = maxSpeedRouge;
         }
@@ -309,13 +321,21 @@ void deplacementmanette()
 /* ****************************************************************************
 Fonctions de boucle infini (loop())
 *****************************************************************************/
+int cooldown=0;
 void loop()
 {
-    bananeJaune();
-    malusRouge();
-    bonusVert();
-    gelBleu();
-    delBonus();
+    // bananeJaune();
+    // malusRouge();
+    // bonusVert();
+    // gelBleu();
+    // delBonus();
     litUART(manette, 6);
     deplacementmanette();
+    actu_pos(robot);
+    if(millis()>cooldown+1000){
+    Serial.println(robot.x);
+    Serial.println(robot.y);
+    cooldown+=1000;
+    }
+
 }

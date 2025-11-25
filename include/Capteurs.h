@@ -39,8 +39,26 @@
 //Capteur de distance
 #define DISTANCEA A2
 #define DISTANCEC A3
+//position encodeurs
+#define DIST 18.75
+#define CMPT 23.93895
 // Variables
-
+//position à l'aide des encodeurs
+double vitang=0;
+double dist=DIST;
+double temps= 0;
+double temps_prec= 0;
+double vit1=0;
+double vit2=0;
+double dep1=0;
+double dep2=0;
+double cx=0;
+double cy=0;
+struct position{
+  double x = 0;
+  double y = 0;
+  double angle = 0;
+};
 // struct suiveur{
 //   int pinGauche,pinDroite,pinCentre;
 //   int seuilCentre;
@@ -66,4 +84,5 @@ float detecDistance(int pin);
 float corrDist(int pin, float valeurCapteur);// a remettre
 //float calibreSuiveur(int pin);
 //int lireSuiveur(struct suiveur);
+void actu_pos(position& pos);
 #endif

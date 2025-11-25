@@ -14,12 +14,12 @@ void litUART(uint8_t *trame, uint8_t sizeTrame)
     uint8_t temporaire[sizeTrame - 1];
     int i;
 
-    if (Serial1.available() >= sizeTrame)
+    if (Serial2.available() >= sizeTrame)
     {
-        Serial1.readBytes(temporaire, 1);
+        Serial2.readBytes(temporaire, 1);
         if (temporaire[0] == 0x24)
         {
-            Serial1.readBytes(temporaire, sizeTrame - 1);
+            Serial2.readBytes(temporaire, sizeTrame - 1);
             for (i = 0; i < sizeTrame - 2; i++)
             {
                 somme = somme + temporaire[i];
@@ -43,5 +43,5 @@ void litUART(uint8_t *trame, uint8_t sizeTrame)
  ******************************************************************************************/
 void initUART1(void)
 {
-    Serial1.begin(115200);
+    Serial2.begin(115200);
 }
