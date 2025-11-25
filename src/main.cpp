@@ -34,16 +34,6 @@ void setup()
     digitalWrite(LED_ROUGE, HIGH);
 }
 
-int couleur = 0;
-int flagRouge = 0;
-int flagVert = 0;
-int flagBleu = 0;
-int flagJaune = 0;
-unsigned long clockR = 0;
-unsigned long clockV = 0;
-unsigned long clockB = 0;
-unsigned long clockJ = 0;
-unsigned long clockN = 0;
 
 /*******************************************************************************************
  * Auteur : Raphael
