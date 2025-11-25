@@ -19,6 +19,8 @@ uint8_t manette[5] = {0, 0, 0, 0, 0};
 // [2]-> joystick(0-100, 50 est la valeur ou le robot ne tourne pas)
 // [3]-> dpad (up->1, down->2, gauche->8, droite->4)
 // [4]-> checksum (verification(addition de toutes les valeurs))
+
+
 void setup()
 {
     BoardInit();
@@ -32,19 +34,114 @@ void setup()
     digitalWrite(LED_VERTE, HIGH);
     digitalWrite(LED_BLEUE, HIGH);
     digitalWrite(LED_ROUGE, HIGH);
+    initUART1();
+}
+int flagBumper=0;
+int couleur=0;
+int flagRouge=0;
+int flagVert=0;
+int flagBleu=1;
+int flagJaune=0;
+int etatJeu=2;
+uint8_t listeLasagne[4];
+uint8_t listeGarfield[2] = {1,2};
+unsigned long clockR=0;
+unsigned long clockV=0;
+unsigned long clockB=0;
+unsigned long clockJ=0;
+unsigned long clockN=0;
+unsigned long debutJeu=0;
+
+
+
+//Flags simulant les données du mvmnt
+int positionX=20;
+int positionY=50;
+
+//Les recu par comm
+int flagBleuRecu=0;
+int etatJeuRecu=0;
+
+
+
+/*******************************************************************************************
+ * Auteur : Alexandre Dionne
+ *
+ * Lit une trame sur UART1 et stocke les donnes dans un tableau
+ *
+ * @param trame (Tableau uint8_t) Addresse du tableau pour la trame recu
+ * @param sizeTrame (uint8_t) longueur de la trame a recevoir (+2 pour start et checksum)
+ ******************************************************************************************/
+
+
+/*******************************************************************************************
+ * Auteur : Alexandre Dionne
+ *
+ * Envoie une trame sur le port UART
+ *
+ * @param trame (Tableau uint8_t) Trame a evoyer
+ ******************************************************************************************/
+void envoieTrame(uint8_t *trame)
+{
+    uint8_t somme;
+    for(int i = 0; i < (sizeof(trame)); i++)
+    {
+        somme = somme + trame[i];
+    }
+    Serial1.write(0x24);
+    Serial1.write(trame, sizeof(trame));
+    Serial1.write(somme);
 }
 
-int couleur = 0;
-int flagRouge = 0;
-int flagVert = 0;
-int flagBleu = 0;
-int flagJaune = 0;
-unsigned long clockR = 0;
-unsigned long clockV = 0;
-unsigned long clockB = 0;
-unsigned long clockJ = 0;
-unsigned long clockN = 0;
 
+/*******************************************************************************************
+ * Auteur : Raphael
+ *
+ * Définit la variable etatJeu
+ * 
+ * 0=Jeu pas débuté
+ * 1=Débuté
+ * 2=Débuté mais bumper ON
+ * 3=Terminé car deux bumper ON
+******************************************************************************************/
+void setEtatJeu(){
+if((positionX!=0 || positionY!=0) && flagBumper==0 && debutJeu==0){etatJeu=1; debutJeu=millis();}
+if((positionX!=0 || positionY!=0) && flagBumper==0){etatJeu=1;}
+if((positionX!=0 || positionY!=0) && flagBumper==1){etatJeu=2;}
+if((positionX!=0 || positionY!=0) && flagBumper==1 && etatJeuRecu==2){etatJeu=3;}
+if(millis()-debutJeu>60000){etatJeu=3;}
+}
+
+/*******************************************************************************************
+ * Auteur : Raphael
+ *
+ * Crée une liste avec les variables qu'on va communiquer
+ * 
+ * @return Tableau [x,y,gel,état du jeu]
+******************************************************************************************/
+void creationListe(){
+  listeLasagne[0] = positionX;
+  listeLasagne[1] = positionY;
+  listeLasagne[2] = flagBleu;
+  listeLasagne[3] = etatJeu;
+}
+
+
+/*******************************************************************************************
+ * Auteur : Raphael
+ *
+ * Définit les variables avec la liste reçu
+ * 
+ * @return positionXRecu
+ * @return positionYRecu
+ * @return flagBleuRecu
+ * @return etatJeuRecu
+ * 
+******************************************************************************************/
+void receptionListe(){
+flagBleuRecu=listeGarfield[0];
+etatJeuRecu=listeGarfield[1];
+}
 /*******************************************************************************************
  * Auteur : Raphael
  *
@@ -144,11 +241,12 @@ void gelBleu()
         flagBleu = 0;
     } // Durée du bonus/malus
 
-    if (couleur == COULEURBLEU && (clockN - clockB > 10000 || clockB == 0))
-    { // Cooldown
-        flagBleu = 1;
-        clockB = millis();
-    }
+if (couleur==COULEURBLEU&&(clockN-clockB>10000||clockB==0)){    //Cooldown 
+  flagBleu=1;
+  clockB=millis();
+  }
+
+if (flagBleuRecu==1){digitalWrite(LED_BLEUE,LOW);delay(5000);digitalWrite(LED_BLEUE,HIGH);}
 }
 
 /*******************************************************************************************
@@ -159,33 +257,30 @@ void gelBleu()
  * Jaune pas inclus car dans sa fct
  *
  * Pas de return juste à mettre la fct dans le loop
+******************************************************************************************/
+void delBonus(){
+if(flagRouge==1){digitalWrite(LED_ROUGE,LOW);}
+if(flagVert==1){digitalWrite(LED_VERTE,LOW);}
+if(flagRouge==0){digitalWrite(LED_ROUGE,HIGH);}
+if(flagVert==0){digitalWrite(LED_VERTE,HIGH);}
+if(etatJeu==3){digitalWrite(LED_BLEUE,LOW);digitalWrite(LED_ROUGE,LOW);digitalWrite(LED_VERTE,LOW);digitalWrite(LED_JAUNE,LOW);while(true){delay(10);}}
+}
+
+/*******************************************************************************************
+ * Auteur : Raphael
+ *
+ * Regarde l'état des bumpers
+ * 
+ * Défini flagBumper à 1 si un bumper est ON
  ******************************************************************************************/
-void delBonus()
-{
-    if (flagBleu == 1)
-    {
-        digitalWrite(LED_BLEUE, LOW);
-    }
-    if (flagRouge == 1)
-    {
-        digitalWrite(LED_ROUGE, LOW);
-    }
-    if (flagVert == 1)
-    {
-        digitalWrite(LED_VERTE, LOW);
-    }
-    if (flagBleu == 0)
-    {
-        digitalWrite(LED_BLEUE, HIGH);
-    }
-    if (flagRouge == 0)
-    {
-        digitalWrite(LED_ROUGE, HIGH);
-    }
-    if (flagVert == 0)
-    {
-        digitalWrite(LED_VERTE, HIGH);
-    }
+  void flagBumperSet(){
+    bool bumpp=false;
+    if(ROBUS_IsBumper(0)){bumpp=true;}
+  if(ROBUS_IsBumper(1)){bumpp=true;}
+  if(ROBUS_IsBumper(2)){bumpp=true;}
+  if(ROBUS_IsBumper(3)){bumpp=true;}
+    if(bumpp){flagBumper=1;}
+    if(!bumpp){flagBumper=0;}
 }
 
 /*************************************************
@@ -315,6 +410,26 @@ void deplacementmanette()
         // Serial.println(vitesseGauche);
     }
 }
+
+// int avance=0; //valeur recu par le esp32 (valeur au repos)
+// int recule=0;  //valeur recu par le esp32 (valeur au repos)
+// int joycon=50; //valeur recu par le esp32 (valeur au repos)
+
+
+
+
+/*
+Auteur: Samuel B. Manelli
+Description: Permet le contrôle du robot à l'aide d'une manette. Reçois des
+valeurs via le esp32
+*/
+
+//set speed pour faire deplacer le robot
+// MOTOR_SetSpeed(DROITE,speedAvance*ratioD);
+// MOTOR_SetSpeed(GAUCHE,speedAvance*ratioG);
+// MOTOR_SetSpeed(DROITE,speedRecule*ratioD);
+// MOTOR_SetSpeed(GAUCHE,speedRecule*ratioG);
+//ecrit comme ca va surement creer des problemes puisque le code va faire avancer pour avance mais stoper pour recule
 
 /* ****************************************************************************
 Fonctions de boucle infini (loop())
