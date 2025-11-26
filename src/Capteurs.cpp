@@ -6,9 +6,49 @@ int seuilGauche = 875;
 int seuilCentre = 875;
 int seuilDroite = 875;
 
+
+
 // Capteur de couleur test
 Adafruit_TCS34725 tcs = Adafruit_TCS34725(TCS34725_INTEGRATIONTIME_101MS, TCS34725_GAIN_4X); // Définit capteur et caractéristiques d'utilisation
+void actu_pos(position& pos){
+  temps=((double)millis())/1000;
+  dep1= (double) ENCODER_ReadReset(0)*CMPT/3200;
+  dep2= (double) ENCODER_ReadReset(1)*CMPT/3200;
+  vit1=dep1/(temps-temps_prec);
+  vit2=dep2/(temps-temps_prec);
+  vitang=(vit1-vit2)/dist;
+  if ((abs(vit1/vit2)>0.95&&abs(vit1/vit2)<1.05)||(vit1==0&&vit2==0)){
+    pos.x+=dep1*cos(pos.angle+90);
+    pos.y+=dep1*sin(pos.angle+90);
+    temps_prec=temps;
+  }
+  else{
+      double r= (dist*(vit2+vit1))/(2*(vit2-vit1));
+      cx= pos.x - (r*cos(pos.angle));
+      cy= pos.y - (r*sin(pos.angle));
+      Serial.println("vit1");
+      Serial.println(vit1);
+      Serial.println("vit2");
+      Serial.println(vit2);
+      Serial.println("rayon :");
+      Serial.println(r);
+      Serial.println("angle:");
+      Serial.println(pos.angle);
+      Serial.println("centre x:");
+      Serial.println(cx);
+      Serial.println("centre y:");
+      Serial.println(cy);
+  
+    pos.angle-=vitang*(temps-temps_prec);
 
+    pos.x = cx + (r*cos(pos.angle));
+    pos.y = cy + (r*sin(pos.angle));
+  
+    temps_prec=temps;
+    Serial.println(pos.x);
+    Serial.println(pos.y);
+  }
+}
 /*******************************************************************************************
  * Auteur : Amine
  * 

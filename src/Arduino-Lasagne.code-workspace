@@ -1,0 +1,14 @@
+{
+	"folders": [
+		{
+			"name": "Arduino-Lasagne",
+			"path": ".."
+		}
+	],
+	"settings": {
+		"files.associations": {
+			"librobus.h": "c",
+			"capteurs.h": "c"
+		}
+	}
+}
