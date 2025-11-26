@@ -9,6 +9,8 @@ Date: 11/13/2025
 Inclure les librairies de functions que vous voulez utiliser
 **************************************************************************** */
 #include "main.h"
+#include <Wire.h>
+#include "MPU9250.h"
 /* ****************************************************************************
 Fonctions d'initialisation (setup)
 **************************************************************************** */
@@ -19,23 +21,6 @@ uint8_t manette[5] = {0, 0, 0, 0, 0};
 // [2]-> joystick(0-100, 50 est la valeur ou le robot ne tourne pas)
 // [3]-> dpad (up->1, down->2, gauche->8, droite->4)
 // [4]-> checksum (verification(addition de toutes les valeurs))
-
-
-void setup()
-{
-    BoardInit();
-    Serial1.begin(115200);
-    Serial.begin(9600);
-    pinMode(LED_ROUGE, OUTPUT);
-    pinMode(LED_VERTE, OUTPUT);
-    pinMode(LED_JAUNE, OUTPUT);
-    pinMode(LED_BLEUE, OUTPUT);
-    digitalWrite(LED_JAUNE, HIGH);
-    digitalWrite(LED_VERTE, HIGH);
-    digitalWrite(LED_BLEUE, HIGH);
-    digitalWrite(LED_ROUGE, HIGH);
-    initUART1();
-}
 int flagBumper=0;
 int couleur=0;
 int flagRouge=0;
@@ -52,7 +37,7 @@ unsigned long clockJ=0;
 unsigned long clockN=0;
 unsigned long debutJeu=0;
 
-
+MPU9250 mpu;
 
 //Flags simulant les données du mvmnt
 int positionX=20;
@@ -61,6 +46,34 @@ int positionY=50;
 //Les recu par comm
 int flagBleuRecu=0;
 int etatJeuRecu=0;
+
+void setup()
+{
+    BoardInit();
+    initUART1();
+    Wire.begin();
+    pinMode(LED_ROUGE, OUTPUT);
+    pinMode(LED_VERTE, OUTPUT);
+    pinMode(LED_JAUNE, OUTPUT);
+    pinMode(LED_BLEUE, OUTPUT);
+
+    digitalWrite(LED_JAUNE, HIGH);
+    digitalWrite(LED_VERTE, HIGH);
+    digitalWrite(LED_BLEUE, HIGH);
+    digitalWrite(LED_ROUGE, HIGH);
+
+ 
+}
+
+
+void print_roll_pitch_yaw() {
+    Serial.print("Yaw, Pitch, Roll: ");
+    Serial.print(mpu.getYaw(), 2);
+    Serial.print(", ");
+    Serial.print(mpu.getPitch(), 2);
+    Serial.print(", ");
+    Serial.println(mpu.getRoll(), 2);
+}
 
 
 
@@ -390,7 +403,7 @@ Fonctions de boucle infini (loop())
 void loop()
 {   
     litUART(listeGarfield,4);
-    //receptionListe(); 
+    receptionListe(); 
     // flagBumperSet();
     // bananeJaune();
     // malusRouge();
@@ -398,11 +411,11 @@ void loop()
     // gelBleu();
     // setEtatJeu(); //DOIT ETRE AVANT DELBONUS()
     // delBonus();
-    //creationListe();    //Doit être après les variables
-    //envoieTrame(listeLasagne);
+    creationListe();    //Doit être après les variables
+    envoieTrame(listeLasagne);
     // litUART(manette, 6);
     // deplacementmanette();
-    Serial.print(listeGarfield[0]);
-Serial.println(listeGarfield[1]);
-    
+   // Serial.print(flagBleuRecu);
+//Serial.println(etatJeuRecu);
+ print_roll_pitch_yaw();   
 }

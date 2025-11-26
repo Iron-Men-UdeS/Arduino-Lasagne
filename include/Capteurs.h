@@ -66,4 +66,7 @@ float detecDistance(int pin);
 float corrDist(int pin, float valeurCapteur);// a remettre
 //float calibreSuiveur(int pin);
 //int lireSuiveur(struct suiveur);
+void setupMPU9250() ;
+void readSensorData();
+void writeMPU9250();
 #endif
