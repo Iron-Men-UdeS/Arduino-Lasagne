@@ -22,16 +22,253 @@ position robot;
 // [3]-> dpad (up->1, down->2, gauche->8, droite->4)
 // [4]-> checksum (verification(addition de toutes les valeurs))
 
-// int couleur = 0;
-// int flagRouge = 0;
-// int flagVert = 0;
-// int flagBleu = 0;
-// int flagJaune = 0;
-// unsigned long clockR = 0;
-// unsigned long clockV = 0;
-// unsigned long clockB = 0;
-// unsigned long clockJ = 0;
-// unsigned long clockN = 0;
+uint8_t listeLasagne[4] = {44,44,44,44}; // 20 50 0 2
+// x 
+// y 
+// gel
+// jeu
+uint8_t listeGarfield[2] = {3, 4};
+
+int flagBumper = 0;
+int couleur = 0;
+int flagRouge = 0;
+int flagVert = 0;
+int flagBleu = 0;
+int flagJaune = 0;
+int etatJeu = 0;
+unsigned long test = 0;
+unsigned long clockR = 0;
+unsigned long clockV = 0;
+unsigned long clockB = 0;
+unsigned long clockJ = 0;
+unsigned long clockN = 0;
+unsigned long debutJeu = 0;
+
+int cooldown = 0;
+
+// Flags simulant les données du mvmnt
+double positionX = 0;
+double positionY = 0;
+
+// Les recu par comm
+int flagBleuRecu = 0;
+int etatJeuRecu = 0;
+
+unsigned long lastDirectionChange = 0;
+int lastDirection = 0;              // 1 = avant, -1 = arrière, 0 = stop
+unsigned long delayDirection = 400; // ms
+
+
+
+double vitang=0;
+double dist=DIST;
+double temps= 0;
+double temps_prec= 0;
+double vit1=0;
+double vit2=0;
+ 
+double cx=0;
+double cy=0;
+double dep1=0;
+double dep2=0;
+int encoder_prec1=0;
+int encoder_prec2=0;
+
+
+
+void actu_angle(position& pos){
+  temps=((double) millis())/1000;
+  dep1= ((double) ENCODER_ReadReset(0))*CMPT/3200;
+  dep2= ((double) ENCODER_ReadReset(1))*CMPT/3200;
+  if(temps==temps_prec){vit1=0;vit2=0;}
+  else{vit1=dep1/(temps-temps_prec);
+  vit2=dep2/(temps-temps_prec);}
+  vitang=(vit1-vit2)/dist;
+  if ((vit1==vit2)||(dep1==0&&dep2==0)){
+    pos.x+=dep1*cos(pos.angle+(PI/2));
+    pos.y+=dep1*sin(pos.angle+(PI/2));
+    temps_prec=temps;
+    encoder_prec1=ENCODER_Read(0);
+    encoder_prec2=ENCODER_Read(1);
+  }
+  else{
+      double r= (dist*(vit2+vit1))/(2*(vit2-vit1));
+      cx= pos.x - (r*cos(pos.angle));
+      cy= pos.y - (r*sin(pos.angle));
+      Serial.println("vitang");
+      Serial.println(vitang);
+      Serial.println("dep1");
+      Serial.println(dep1);
+      Serial.println("dep2");
+      Serial.println(dep2);
+      Serial.println("vit1");
+      Serial.println(vit1);
+      Serial.println("vit2");
+      Serial.println(vit2);
+    //   Serial.println("rayon :");
+    //   Serial.println(r);
+      Serial.println("angle:");
+      Serial.println(pos.angle);
+    //   Serial.println("centre x:");
+    //   Serial.println(cx);
+    //   Serial.println("centre y:");
+    //   Serial.println(cy);
+//           Serial.println("dep1");
+//     Serial.println(dep1);
+//           Serial.println("dep2");
+//     Serial.println(dep2);
+  Serial.println("temps");
+  Serial.println(temps);
+  Serial.println("tempsPrec");
+  Serial.println(temps_prec);
+//     Serial.println("millis");
+//   Serial.println(millis());
+    pos.angle-=vitang*(temps-temps_prec);  
+
+    pos.x = cx + (r*cos(pos.angle));
+    pos.y = cy + (r*sin(pos.angle));
+  
+    temps_prec=temps;
+    encoder_prec1=ENCODER_Read(0);
+    encoder_prec2=ENCODER_Read(1);
+    Serial.println(pos.x);
+    Serial.println(pos.y);
+  }
+}
+
+void setup()
+{
+    BoardInit();
+    initUART2();
+    initUART1();
+
+    initCapteurCouleur();
+
+    pinMode(LED_ROUGE, OUTPUT);
+    pinMode(LED_VERTE, OUTPUT);
+    pinMode(LED_JAUNE, OUTPUT);
+    pinMode(LED_BLEUE, OUTPUT);
+
+    digitalWrite(LED_JAUNE, HIGH);
+    digitalWrite(LED_VERTE, HIGH);
+    digitalWrite(LED_BLEUE, HIGH);
+    digitalWrite(LED_ROUGE, HIGH);
+
+    test = millis();
+    Serial.println("setup");
+}
+
+/* ****************************************************************************
+Fonctions de boucle infini (loop())
+*****************************************************************************/
+void loop()
+{
+    while (1)
+    {
+
+        //if (millis()-cooldown>0){actu_angle(robot);cooldown+=1;}
+        actu_angle(robot);
+        // if(litUART1(listeGarfield, 4))
+        // {
+        //     envoieTrameUART1(listeLasagne);
+        // }
+        if (litUART2(manette, 6))
+        {
+            // Serial.print(manette[0]);
+            // Serial.print(manette[1]);
+            // Serial.print(manette[2]);
+            // Serial.print(manette[3]);
+            // Serial.println(manette[4]);
+            deplacementmanette();
+        }
+
+        // if ((millis() - test) >= 500)
+        // {
+        //     test = millis();
+        //     couleur = detectCouleur();
+        // }
+        // Serial.print(couleur);
+        // bonusVert();
+        // Serial.print(flagVert);
+        // Serial.print(flagRouge);
+        // bananeJaune();
+        // malusRouge();
+        // gelBleu();
+
+        //   flagBumperSet();
+        //   setEtatJeu(); // AVANT DEL BONUS
+        // delBonus(); // APRES ETAT JEU
+
+        //   creationListe();
+        //   receptionListe();
+    }
+}
+/*******************************************************************************************
+ * Auteur : Raphael
+ *
+ * Crée une liste avec les variables qu'on va communiquer
+ *
+ * @return Tableau [x,y,gel,état du jeu]
+ ******************************************************************************************/
+void creationListe()
+{
+    listeLasagne[0] = positionX;
+    listeLasagne[1] = positionY;
+    listeLasagne[2] = flagBleu;
+    listeLasagne[3] = etatJeu;
+}
+
+/*******************************************************************************************
+ * Auteur : Raphael
+ *
+ * Définit les variables avec la liste reçu
+ *
+ * @return positionXRecu
+ * @return positionYRecu
+ * @return flagBleuRecu
+ * @return etatJeuRecu
+ *
+ ******************************************************************************************/
+void receptionListe()
+{
+    flagBleuRecu = listeGarfield[0];
+    etatJeuRecu = listeGarfield[1];
+}
+
+/*******************************************************************************************
+ * Auteur : Raphael
+ *
+ * Définit la variable etatJeu
+ *
+ * 0=Jeu pas débuté
+ * 1=Débuté
+ * 2=Débuté mais bumper ON
+ * 3=Terminé car deux bumper ON
+ ******************************************************************************************/
+void setEtatJeu()
+{
+    if ((positionX != 0 || positionY != 0) && flagBumper == 0 && debutJeu == 0)
+    {
+        etatJeu = 1;
+        debutJeu = millis();
+    }
+    if ((positionX != 0 || positionY != 0) && flagBumper == 0)
+    {
+        etatJeu = 1;
+    }
+    if ((positionX != 0 || positionY != 0) && flagBumper == 1)
+    {
+        etatJeu = 2;
+    }
+    if ((positionX != 0 || positionY != 0) && flagBumper == 1 && etatJeuRecu == 2)
+    {
+        etatJeu = 3;
+    }
+    if (millis() - debutJeu > 60000)
+    {
+        etatJeu = 3;
+    }
+}
 
 /*******************************************************************************************
  * Auteur : Raphael
