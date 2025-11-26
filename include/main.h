@@ -8,6 +8,14 @@
 //#include "Niveau1.h"
 #include "Communication.h"
 
+
+
+struct position{
+  double x = 0;
+  double y = 0;
+  double angle = 0;
+};
+
 //define
 #define maxSpeedAvance 0.5
 #define maxSpeedRecule 0.5

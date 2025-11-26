@@ -9,6 +9,10 @@ Date: 11/13/2025
 Inclure les librairies de functions que vous voulez utiliser
 **************************************************************************** */
 #include "main.h"
+#define DIST 18.75
+#define CMPT 23.93895
+
+position robot;
 
 void creationListe();
 void receptionListe();
@@ -43,7 +47,7 @@ int flagBumper = 0;
 int couleur = 0;
 int flagRouge = 0;
 int flagVert = 0;
-int flagBleu = 1;
+int flagBleu = 0;
 int flagJaune = 0;
 int etatJeu = 0;
 unsigned long test = 0;
@@ -54,9 +58,11 @@ unsigned long clockJ = 0;
 unsigned long clockN = 0;
 unsigned long debutJeu = 0;
 
+int cooldown = 0;
+
 // Flags simulant les données du mvmnt
-int positionX = 20;
-int positionY = 50;
+double positionX = 0;
+double positionY = 0;
 
 // Les recu par comm
 int flagBleuRecu = 0;
@@ -65,6 +71,76 @@ int etatJeuRecu = 0;
 unsigned long lastDirectionChange = 0;
 int lastDirection = 0;              // 1 = avant, -1 = arrière, 0 = stop
 unsigned long delayDirection = 400; // ms
+
+
+
+double vitang=0;
+double dist=DIST;
+unsigned long temps= 0;
+unsigned long temps_prec= 0;
+double vit1=0;
+double vit2=0;
+ 
+double cx=0;
+double cy=0;
+double dep1=0;
+double dep2=0;
+int encoder_prec1=0;
+int encoder_prec2=0;
+
+
+
+void actu_angle(position& pos){
+  temps=((double) millis());
+  dep1= (double) (ENCODER_Read(0)-encoder_prec1)*CMPT/3200;
+  dep2= (double) (ENCODER_Read(1)-encoder_prec2)*CMPT/3200;
+  if(temps==temps_prec){vit1=0;vit2=0;}
+  else{vit1=dep1/(temps-temps_prec);
+  vit2=dep2/(temps-temps_prec);}
+  vitang=(vit1-vit2)/dist;
+  if ((vit1==vit2)||(dep1==0&&dep2==0)){
+    pos.x+=dep1*cos(pos.angle+(PI/2));
+    pos.y+=dep1*sin(pos.angle+(PI/2));
+    temps_prec=temps;
+  }
+  else{
+      double r= (dist*(vit2+vit1))/(2*(vit2-vit1));
+      cx= pos.x - (r*cos(pos.angle));
+      cy= pos.y - (r*sin(pos.angle));
+    //   Serial.println("vit1");
+    //   Serial.println(vit1);
+    //   Serial.println("vit2");
+    //   Serial.println(vit2);
+    //   Serial.println("rayon :");
+    //   Serial.println(r);
+      Serial.println("angle:");
+      Serial.println(pos.angle);
+      Serial.println("centre x:");
+      Serial.println(cx);
+      Serial.println("centre y:");
+      Serial.println(cy);
+//           Serial.println("dep1");
+//     Serial.println(dep1);
+//           Serial.println("dep2");
+//     Serial.println(dep2);
+//   Serial.println("temps");
+//   Serial.println(temps);
+//   Serial.println("tempsPrec");
+//   Serial.println(temps_prec);
+//     Serial.println("millis");
+//   Serial.println(millis());
+    pos.angle-=(1000*vitang)*((temps/1000)-(temps_prec/1000));
+
+    pos.x = cx + (r*cos(pos.angle));
+    pos.y = cy + (r*sin(pos.angle));
+  
+    temps_prec=temps;
+    encoder_prec1=ENCODER_Read(0);
+    encoder_prec2=ENCODER_Read(1);
+    Serial.println(pos.x);
+    Serial.println(pos.y);
+  }
+}
 
 void setup()
 {
@@ -85,6 +161,7 @@ void setup()
     digitalWrite(LED_ROUGE, HIGH);
 
     test = millis();
+    Serial.println("setup");
 }
 
 /* ****************************************************************************
@@ -92,39 +169,45 @@ Fonctions de boucle infini (loop())
 *****************************************************************************/
 void loop()
 {
-    
-    // if(litUART1(listeGarfield, 4))
-    // {
-    //     envoieTrameUART1(listeLasagne);
-    // }
-    if(litUART2(manette, 6))
+    while (1)
     {
-        // Serial.print(manette[0]);
-        // Serial.print(manette[1]);
-        // Serial.print(manette[2]);
-        // Serial.print(manette[3]);
-        // Serial.println(manette[4]);
 
-        deplacementmanette();
+        if (millis()-cooldown>0){actu_angle(robot);cooldown+=1;}
+
+        // if(litUART1(listeGarfield, 4))
+        // {
+        //     envoieTrameUART1(listeLasagne);
+        // }
+        if (litUART2(manette, 6))
+        {
+            // Serial.print(manette[0]);
+            // Serial.print(manette[1]);
+            // Serial.print(manette[2]);
+            // Serial.print(manette[3]);
+            // Serial.println(manette[4]);
+            deplacementmanette();
+        }
+
+        // if ((millis() - test) >= 500)
+        // {
+        //     test = millis();
+        //     couleur = detectCouleur();
+        // }
+        // Serial.print(couleur);
+        // bonusVert();
+        // Serial.print(flagVert);
+        // Serial.print(flagRouge);
+        // bananeJaune();
+        // malusRouge();
+        // gelBleu();
+
+        //   flagBumperSet();
+        //   setEtatJeu(); // AVANT DEL BONUS
+        // delBonus(); // APRES ETAT JEU
+
+        //   creationListe();
+        //   receptionListe();
     }
-
-    if ((millis() - test) >= 500)
-    {
-        test = millis();
-        couleur = detectCouleur();
-    }
-    Serial.print(couleur);
-    bonusVert();
-    bananeJaune();
-    malusRouge();
-    gelBleu();
-
-    flagBumperSet();
-    setEtatJeu(); // AVANT DEL BONUS
-delBonus(); // APRES ETAT JEU
-
-    creationListe();
-    receptionListe();
 }
 /*******************************************************************************************
  * Auteur : Raphael
