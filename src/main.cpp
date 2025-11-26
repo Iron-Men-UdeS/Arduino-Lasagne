@@ -76,8 +76,8 @@ unsigned long delayDirection = 400; // ms
 
 double vitang=0;
 double dist=DIST;
-unsigned long temps= 0;
-unsigned long temps_prec= 0;
+double temps= 0;
+double temps_prec= 0;
 double vit1=0;
 double vit2=0;
  
@@ -91,9 +91,9 @@ int encoder_prec2=0;
 
 
 void actu_angle(position& pos){
-  temps=((double) millis());
-  dep1= (double) (ENCODER_Read(0)-encoder_prec1)*CMPT/3200;
-  dep2= (double) (ENCODER_Read(1)-encoder_prec2)*CMPT/3200;
+  temps=((double) millis())/1000;
+  dep1= ((double) ENCODER_ReadReset(0))*CMPT/3200;
+  dep2= ((double) ENCODER_ReadReset(1))*CMPT/3200;
   if(temps==temps_prec){vit1=0;vit2=0;}
   else{vit1=dep1/(temps-temps_prec);
   vit2=dep2/(temps-temps_prec);}
@@ -102,34 +102,42 @@ void actu_angle(position& pos){
     pos.x+=dep1*cos(pos.angle+(PI/2));
     pos.y+=dep1*sin(pos.angle+(PI/2));
     temps_prec=temps;
+    encoder_prec1=ENCODER_Read(0);
+    encoder_prec2=ENCODER_Read(1);
   }
   else{
       double r= (dist*(vit2+vit1))/(2*(vit2-vit1));
       cx= pos.x - (r*cos(pos.angle));
       cy= pos.y - (r*sin(pos.angle));
-    //   Serial.println("vit1");
-    //   Serial.println(vit1);
-    //   Serial.println("vit2");
-    //   Serial.println(vit2);
+      Serial.println("vitang");
+      Serial.println(vitang);
+      Serial.println("dep1");
+      Serial.println(dep1);
+      Serial.println("dep2");
+      Serial.println(dep2);
+      Serial.println("vit1");
+      Serial.println(vit1);
+      Serial.println("vit2");
+      Serial.println(vit2);
     //   Serial.println("rayon :");
     //   Serial.println(r);
       Serial.println("angle:");
       Serial.println(pos.angle);
-      Serial.println("centre x:");
-      Serial.println(cx);
-      Serial.println("centre y:");
-      Serial.println(cy);
+    //   Serial.println("centre x:");
+    //   Serial.println(cx);
+    //   Serial.println("centre y:");
+    //   Serial.println(cy);
 //           Serial.println("dep1");
 //     Serial.println(dep1);
 //           Serial.println("dep2");
 //     Serial.println(dep2);
-//   Serial.println("temps");
-//   Serial.println(temps);
-//   Serial.println("tempsPrec");
-//   Serial.println(temps_prec);
+  Serial.println("temps");
+  Serial.println(temps);
+  Serial.println("tempsPrec");
+  Serial.println(temps_prec);
 //     Serial.println("millis");
 //   Serial.println(millis());
-    pos.angle-=(1000*vitang)*((temps/1000)-(temps_prec/1000));
+    pos.angle-=vitang*(temps-temps_prec);  
 
     pos.x = cx + (r*cos(pos.angle));
     pos.y = cy + (r*sin(pos.angle));
@@ -172,8 +180,8 @@ void loop()
     while (1)
     {
 
-        if (millis()-cooldown>0){actu_angle(robot);cooldown+=1;}
-
+        //if (millis()-cooldown>0){actu_angle(robot);cooldown+=1;}
+        actu_angle(robot);
         // if(litUART1(listeGarfield, 4))
         // {
         //     envoieTrameUART1(listeLasagne);
