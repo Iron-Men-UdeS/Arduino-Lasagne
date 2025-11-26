@@ -175,6 +175,7 @@ int lireCapteurs(int capteur)
 void initCapteurCouleur(void)
 {
   Wire.begin();
+  Wire.setClock( 400000UL);
   if (tcs.begin()) // S'assure que le capteur est detecte
   {
     tcs.setInterrupt(false);
@@ -199,11 +200,11 @@ int detectCouleur(void)
 
    // tcs.setInterrupt(true);  // turn off LED
 
-    Serial.print("C:\t"); Serial.print(clear);
-    Serial.print("\tR:\t"); Serial.print(red);
-    Serial.print("\tG:\t"); Serial.print(green);
-    Serial.print("\tB:\t"); Serial.print(blue);
-    Serial.println();
+    // Serial.print("C:\t"); Serial.print(clear);
+    // Serial.print("\tR:\t"); Serial.print(red);
+    // Serial.print("\tG:\t"); Serial.print(green);
+    // Serial.print("\tB:\t"); Serial.print(blue);
+    // Serial.println();
 
     // Figure out some basic hex code for visualization
     // uint32_t sum = clear;

@@ -201,8 +201,8 @@ void Adafruit_TCS34725::setGain(tcs34725Gain_t gain) {
  */
 void Adafruit_TCS34725::getRawData(uint16_t *r, uint16_t *g, uint16_t *b,
                                    uint16_t *c) {
-  if (!_tcs34725Initialised)
-    begin();
+  //if (!_tcs34725Initialised)
+    //begin();
 
   *c = read16(TCS34725_CDATAL);
   *r = read16(TCS34725_RDATAL);
