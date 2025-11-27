@@ -20,20 +20,21 @@
 // Variables externe
 
 // //Prototypes de fonctions
-int suivreLigne(void);
-void bleu();
-void vert();
+// int suivreLigne(void);
+// void bleu();
+// void vert();
 void bougeBrasDroit(int position);
 void bougeBrasGauche(int position);
 void bouge2Bras(int posGauche,int posDroit);
 void randomDEL();
 //void rouge();
-void changeRobot(int direction);
-void rouge2();
-void jauneAntoine();
+// void changeRobot(int direction);
+// void rouge2();
+// void jauneAntoine();
 void malusRouge();
 void bonusVert();
 void gelBleu();
 void bananeJaune();
 void delBonus();
+//void randomDEL();
 #endif

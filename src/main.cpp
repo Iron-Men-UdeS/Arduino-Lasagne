@@ -9,22 +9,12 @@ Date: 11/13/2025
 Inclure les librairies de functions que vous voulez utiliser
 **************************************************************************** */
 #include "main.h"
-
-void creationListe();
-void receptionListe();
-void setEtatJeu();
-void malusRouge();
-void bonusVert();
-void bananeJaune();
-void gelBleu();
-void delBonus();
-void flagBumperSet();
-void deplacementmanette();
-
+//#include "Capteurs.h"
 /* ****************************************************************************
 Fonctions d'initialisation (setup)
 **************************************************************************** */
 uint8_t manette[5] = {0, 0, 0, 0, 0};
+position robot;
 // []-> start condition ($)
 // [0]-> avance (0-100)
 // [1]-> recule (0-100)
@@ -43,7 +33,7 @@ int flagBumper = 0;
 int couleur = 0;
 int flagRouge = 0;
 int flagVert = 0;
-int flagBleu = 1;
+int flagBleu = 0;
 int flagJaune = 0;
 int etatJeu = 0;
 unsigned long test = 0;
@@ -54,9 +44,11 @@ unsigned long clockJ = 0;
 unsigned long clockN = 0;
 unsigned long debutJeu = 0;
 
+int cooldown = 0;
+
 // Flags simulant les données du mvmnt
-int positionX = 20;
-int positionY = 50;
+double positionX = 0;
+double positionY = 0;
 
 // Les recu par comm
 int flagBleuRecu = 0;
@@ -65,6 +57,84 @@ int etatJeuRecu = 0;
 unsigned long lastDirectionChange = 0;
 int lastDirection = 0;              // 1 = avant, -1 = arrière, 0 = stop
 unsigned long delayDirection = 400; // ms
+
+
+
+double vitang=0;
+double dist=DIST;
+double temps= 0;
+double temps_prec= 0;
+double vit1=0;
+double vit2=0;
+ 
+double cx=0;
+double cy=0;
+double dep1=0;
+double dep2=0;
+int encoder_prec1=0;
+int encoder_prec2=0;
+
+
+
+void actu_angle(position& pos){
+  temps=((double) millis())/1000;
+  dep1= ((double) ENCODER_ReadReset(0))*CMPT/3200;
+  dep2= ((double) ENCODER_ReadReset(1))*CMPT/3200;
+  if(temps==temps_prec){vit1=0;vit2=0;}
+  else{vit1=dep1/(temps-temps_prec);
+  vit2=dep2/(temps-temps_prec);}
+  vitang=(vit1-vit2)/dist;
+  if ((vit1==vit2)||(dep1==0&&dep2==0)){
+    pos.x+=dep1*cos(pos.angle+(PI/2));
+    pos.y+=dep1*sin(pos.angle+(PI/2));
+    temps_prec=temps;
+    encoder_prec1=ENCODER_Read(0);
+    encoder_prec2=ENCODER_Read(1);
+  }
+  else{
+      double r= (dist*(vit2+vit1))/(2*(vit2-vit1));
+      cx= pos.x - (r*cos(pos.angle));
+      cy= pos.y - (r*sin(pos.angle));
+      Serial.println("vitang");
+      Serial.println(vitang);
+      Serial.println("dep1");
+      Serial.println(dep1);
+      Serial.println("dep2");
+      Serial.println(dep2);
+      Serial.println("vit1");
+      Serial.println(vit1);
+      Serial.println("vit2");
+      Serial.println(vit2);
+    //   Serial.println("rayon :");
+    //   Serial.println(r);
+      Serial.println("angle:");
+      Serial.println(pos.angle);
+    //   Serial.println("centre x:");
+    //   Serial.println(cx);
+    //   Serial.println("centre y:");
+    //   Serial.println(cy);
+//           Serial.println("dep1");
+//     Serial.println(dep1);
+//           Serial.println("dep2");
+//     Serial.println(dep2);
+  Serial.println("temps");
+  Serial.println(temps);
+  Serial.println("tempsPrec");
+  Serial.println(temps_prec);
+//     Serial.println("millis");
+//   Serial.println(millis());
+    pos.angle-=vitang*(temps-temps_prec);  
+
+    pos.x = cx + (r*cos(pos.angle));
+    pos.y = cy + (r*sin(pos.angle));
+  
+    temps_prec=temps;
+    encoder_prec1=ENCODER_Read(0);
+    encoder_prec2=ENCODER_Read(1);
+    Serial.println(pos.x);
+    Serial.println(pos.y);
+  }
+}
 
 void setup()
 {
@@ -85,6 +155,9 @@ void setup()
     digitalWrite(LED_VERTE, HIGH);
     digitalWrite(LED_BLEUE, HIGH);
     digitalWrite(LED_ROUGE, HIGH);
+
+    test = millis();
+    Serial.println("setup");
 }
 
 /* ****************************************************************************
@@ -92,35 +165,45 @@ Fonctions de boucle infini (loop())
 *****************************************************************************/
 void loop()
 {
-    if(litUART1(listeGarfield, 4))       //Si recois une trame de garfield
+    while (1)
     {
-        receptionListe();       //Place les valeurs recues dans les variables
-        creationListe();                 //Actualise les valeurs dans le tableau
-        envoieTrameUART1(listeLasagne);  //Envoie la trame à Garfield
+
+        //if (millis()-cooldown>0){actu_angle(robot);cooldown+=1;}
+        actu_angle(robot);
+        // if(litUART1(listeGarfield, 4))
+        // {
+        //     envoieTrameUART1(listeLasagne);
+        // }
+        if (litUART2(manette, 6))
+        {
+            // Serial.print(manette[0]);
+            // Serial.print(manette[1]);
+            // Serial.print(manette[2]);
+            // Serial.print(manette[3]);
+            // Serial.println(manette[4]);
+            deplacementmanette();
+        }
+
+        // if ((millis() - test) >= 500)
+        // {
+        //     test = millis();
+        //     couleur = detectCouleur();
+        // }
+        // Serial.print(couleur);
+        // bonusVert();
+        // Serial.print(flagVert);
+        // Serial.print(flagRouge);
+        // bananeJaune();
+        // malusRouge();
+        // gelBleu();
+
+        //   flagBumperSet();
+        //   setEtatJeu(); // AVANT DEL BONUS
+        // delBonus(); // APRES ETAT JEU
+
+        //   creationListe();
+        //   receptionListe();
     }
-    // if(litUART2(manette, 6))
-    // {
-    //     deplacementmanette();   //Bouge le robot en conséquences des valeurs reçus
-    // }
-
-    // if ((millis() - test) >= 500)   //Toute les 500ms
-    // {   
-    //     test = millis();            //Reset le timer
-    //     couleur = detectCouleur();  //Lit la couleur
-    // }
-
-    // clockN = millis();  //Temps actuel
-
-    // //Fonctions Bonus/Malus
-    // malusRouge();
-    // bananeJaune();
-    // bonusVert();
-    // gelBleu();
-
-    // flagBumperSet();
-    // setEtatJeu(); // AVANT DEL BONUS
-
-    //delBonus(); // APRES ETAT JEU
 }
 
 /*******************************************************************************************
@@ -205,13 +288,12 @@ void malusRouge()
         digitalWrite(LED_ROUGE, HIGH);
     } // Durée du bonus/malus
 
-    if (couleur == COULEURROUGE && (clockN - clockR > 10000 || clockR == 0))
-    { // Cooldown
-        flagRouge = 1;
-        digitalWrite(LED_ROUGE, LOW);
-        clockR = millis();
-    }
-}
+//     if (couleur == COULEURROUGE && (clockN - clockR > 10000 || clockR == 0))
+//     { // Cooldown
+//         flagRouge = 1;
+//         clockR = millis();
+//     }
+// }
 
 /*******************************************************************************************
  * Auteur : Raphael
@@ -228,13 +310,12 @@ void bonusVert()
         digitalWrite(LED_VERTE, HIGH);
     } // Durée du bonus/malus
 
-    if (couleur == COULEURVERT && (clockN - clockV > 10000 || clockV == 0))
-    { // Cooldown
-        flagVert = 1;
-        digitalWrite(LED_VERTE, LOW);
-        clockV = millis();
-    }
-}
+//     if (couleur == COULEURVERT && (clockN - clockV > 10000 || clockV == 0))
+//     { // Cooldown
+//         flagVert = 1;
+//         clockV = millis();
+//     }
+// }
 
 /*******************************************************************************************
  * Auteur : Raphael
@@ -278,20 +359,12 @@ void gelBleu()
         digitalWrite(LED_BLEUE, HIGH);
     } // Durée du bonus/malus
 
-    if (couleur == COULEURBLEU && (clockN - clockB > 10000 || clockB == 0))
-    { // Cooldown
-        flagBleu = 1;
-        digitalWrite(LED_BLEUE, LOW);
-        clockB = millis();
-    }
-
-    if (flagBleuRecu == 1)
-    {
-        digitalWrite(LED_BLEUE, LOW);
-        delay(5000);
-        digitalWrite(LED_BLEUE, HIGH);
-    }
-}
+//     if (couleur == COULEURBLEU && (clockN - clockB > 10000 || clockB == 0))
+//     { // Cooldown
+//         flagBleu = 1;
+//         clockB = millis();
+//     }
+// }
 
 /*******************************************************************************************
  * Auteur : Raphael
@@ -302,72 +375,33 @@ void gelBleu()
  *
  * Pas de return juste à mettre la fct dans le loop
  ******************************************************************************************/
-void delBonus()
-{
-    if (flagRouge == 1)
-    {
-        digitalWrite(LED_ROUGE, LOW);
-    }
-    if (flagVert == 1)
-    {
-        digitalWrite(LED_VERTE, LOW);
-    }
-    if (flagRouge == 0)
-    {
-        digitalWrite(LED_ROUGE, HIGH);
-    }
-    if (flagVert == 0)
-    {
-        digitalWrite(LED_VERTE, HIGH);
-    }
-    if (etatJeu == 3)
-    {
-        digitalWrite(LED_BLEUE, LOW);
-        digitalWrite(LED_ROUGE, LOW);
-        digitalWrite(LED_VERTE, LOW);
-        digitalWrite(LED_JAUNE, LOW);
-        while (true)
-        {
-            delay(10);
-        }
-    }
-}
-
-/*******************************************************************************************
- * Auteur : Raphael
- *
- * Regarde l'état des bumpers
- *
- * Défini flagBumper à 1 si un bumper est ON
- ******************************************************************************************/
-void flagBumperSet()
-{ 
-    bool bumpp = false;
-    if (ROBUS_IsBumper(0))
-    {
-        bumpp = true;
-    }
-    if (ROBUS_IsBumper(1))
-    {
-        bumpp = true;
-    }
-    if (ROBUS_IsBumper(2))
-    {
-        bumpp = true;
-    }
-    if (ROBUS_IsBumper(3))
-    {
-        bumpp = true;
-    }
-    if (bumpp)
-    {
-        flagBumper = 1;
-    }
-    if (!bumpp)
-    {
-        flagBumper = 0;
-    }
-}
+// void delBonus()
+// {
+//     if (flagBleu == 1)
+//     {
+//         digitalWrite(LED_BLEUE, LOW);
+//     }
+//     if (flagRouge == 1)
+//     {
+//         digitalWrite(LED_ROUGE, LOW);
+//     }
+//     if (flagVert == 1)
+//     {
+//         digitalWrite(LED_VERTE, LOW);
+//     }
+//     if (flagBleu == 0)
+//     {
+//         digitalWrite(LED_BLEUE, HIGH);
+//     }
+//     if (flagRouge == 0)
+//     {
+//         digitalWrite(LED_ROUGE, HIGH);
+//     }
+//     if (flagVert == 0)
+//     {
+//         digitalWrite(LED_VERTE, HIGH);
+//     }
+// }
 
 /*************************************************
 Auteur: Samuel B. Manelli
@@ -411,28 +445,28 @@ void deplacementmanette()
         }
 
         // permet de limiter la vitesse vers l'avant max
-        if (speedAvance > 0.5 && flagRouge == flagVert)
+        if (speedAvance > 0.5 /*&& flagRouge == flagVert*/)
         {
             speedAvance = maxSpeedAvance;
         }
-        if (speedAvance > 0.5 && flagRouge == 0 && flagVert == 1)
+        if (speedAvance > 0.5/*  && flagRouge == 0 && flagVert == 1*/)
         {
             speedAvance = maxSpeedVert;
         }
-        if (speedAvance > 0.5 && flagRouge == 1 && flagVert == 0)
+        if (speedAvance > 0.5 /*&& flagRouge == 1 && flagVert == 0*/)
         {
             speedAvance = maxSpeedRouge;
         }
         // permet de limiter la vitesse de reculons max
-        if (speedRecule > 0.5 && flagRouge == flagVert)
+        if (speedRecule > 0.5 /*&&flagRouge == flagVert*/)
         {
             speedRecule = maxSpeedRecule;
         }
-        if (speedRecule > 0.5 && flagRouge == 0 && flagVert == 1)
+        if (speedRecule > 0.5 /*&&flagRouge == 0 && flagVert == 1*/)
         {
             speedRecule = maxSpeedVert;
         }
-        if (speedRecule > 0.5 && flagRouge == 1 && flagVert == 0)
+        if (speedRecule > 0.5 /*&&flagRouge == 1 && flagVert == 0*/)
         {
             speedRecule = maxSpeedRouge;
         }
@@ -472,7 +506,7 @@ void deplacementmanette()
         //     currentDirection = -1;
 
         // // --- DÉTECTION D'INVERSION ---
-        // if (currentDirection != 0 && currentDirection != lastDirection)
+        // if (currentDirection != 0 && currentDirection != lastDirection && millis()>400)
         // {
         //     lastDirectionChange = millis();
         //     lastDirection = currentDirection;
@@ -491,3 +525,24 @@ void deplacementmanette()
     }
 }
 
+/* ****************************************************************************
+Fonctions de boucle infini (loop())
+*****************************************************************************/
+int cooldown=0;
+void loop()
+{
+    // bananeJaune();
+    // malusRouge();
+    // bonusVert();
+    // gelBleu();
+    // delBonus();
+    litUART(manette, 6);
+    deplacementmanette();
+    actu_pos(robot);
+    if(millis()>cooldown+1000){
+    Serial.println(robot.x);
+    Serial.println(robot.y);
+    cooldown+=1000;
+    }
+
+}
