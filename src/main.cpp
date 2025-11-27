@@ -32,7 +32,7 @@ uint8_t manette[5] = {0, 0, 0, 0, 0};
 // [3]-> dpad (up->1, down->2, gauche->8, droite->4)
 // [4]-> checksum (verification(addition de toutes les valeurs))
 
-uint8_t listeLasagne[4] = {44,44,44,44}; // 20 50 0 2
+uint8_t listeLasagne[4] = {44,44,44,44}; 
 // x 
 // y 
 // gel
@@ -69,9 +69,11 @@ unsigned long delayDirection = 400; // ms
 void setup()
 {
     BoardInit();
+
+    //Communication
     initUART2();
     initUART1();
-
+    //Couleurs / LEDS
     initCapteurCouleur();
 
     pinMode(LED_ROUGE, OUTPUT);
@@ -83,8 +85,6 @@ void setup()
     digitalWrite(LED_VERTE, HIGH);
     digitalWrite(LED_BLEUE, HIGH);
     digitalWrite(LED_ROUGE, HIGH);
-
-    test = millis();
 }
 
 /* ****************************************************************************
@@ -92,41 +92,37 @@ Fonctions de boucle infini (loop())
 *****************************************************************************/
 void loop()
 {
-    
-    // if(litUART1(listeGarfield, 4))
+    if(litUART1(listeGarfield, 4))       //Si recois une trame de garfield
+    {
+        receptionListe();       //Place les valeurs recues dans les variables
+        creationListe();                 //Actualise les valeurs dans le tableau
+        envoieTrameUART1(listeLasagne);  //Envoie la trame à Garfield
+    }
+    // if(litUART2(manette, 6))
     // {
-    //     envoieTrameUART1(listeLasagne);
+    //     deplacementmanette();   //Bouge le robot en conséquences des valeurs reçus
     // }
-    if(litUART2(manette, 6))
-    {
-        // Serial.print(manette[0]);
-        // Serial.print(manette[1]);
-        // Serial.print(manette[2]);
-        // Serial.print(manette[3]);
-        // Serial.println(manette[4]);
 
-        deplacementmanette();
-    }
+    // if ((millis() - test) >= 500)   //Toute les 500ms
+    // {   
+    //     test = millis();            //Reset le timer
+    //     couleur = detectCouleur();  //Lit la couleur
+    // }
 
-    if ((millis() - test) >= 500)
-    {
-        test = millis();
-        couleur = detectCouleur();
-    }
-    Serial.print(couleur);
-    malusRouge();
-    bananeJaune();
-    bonusVert();
-    gelBleu();
+    // clockN = millis();  //Temps actuel
 
-    flagBumperSet();
-    setEtatJeu(); // AVANT DEL BONUS
+    // //Fonctions Bonus/Malus
+    // malusRouge();
+    // bananeJaune();
+    // bonusVert();
+    // gelBleu();
+
+    // flagBumperSet();
+    // setEtatJeu(); // AVANT DEL BONUS
 
     //delBonus(); // APRES ETAT JEU
-
-    creationListe();
-    receptionListe();
 }
+
 /*******************************************************************************************
  * Auteur : Raphael
  *
@@ -203,8 +199,6 @@ void setEtatJeu()
  ******************************************************************************************/
 void malusRouge()
 {
-    clockN = millis();
-
     if (clockN - clockR > 5000)
     {
         flagRouge = 0;
@@ -228,8 +222,6 @@ void malusRouge()
  ******************************************************************************************/
 void bonusVert()
 {
-    clockN = millis();
-
     if (clockN - clockV > 5000)
     {
         flagVert = 0;
@@ -253,12 +245,10 @@ void bonusVert()
  ******************************************************************************************/
 void bananeJaune()
 {
-    clockN = millis();
-
     if (couleur == COULEURJAUNE && (clockN - clockJ > 7000 || clockJ == 0))
     { // Cooldown
         flagJaune = 1;
-        while (flagJaune == 1)
+        if (flagJaune == 1)
         {
             digitalWrite(LED_JAUNE, LOW);
             tourne(762, 0.4, DROITE);
@@ -282,8 +272,6 @@ void bananeJaune()
  ******************************************************************************************/
 void gelBleu()
 {
-    clockN = millis();
-
     if (clockN - clockB > 5000)
     {
         flagBleu = 0;
