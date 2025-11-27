@@ -57,11 +57,12 @@ unsigned long clockB = 0;
 unsigned long clockJ = 0;
 unsigned long clockN = 0;
 unsigned long debutJeu = 0;
+float tempsBleu=-10000;
 
 int cooldown = 0;
 
 // Flags simulant les données du mvmnt
-int positionX = 100;
+int positionX = 0;
 int positionY = 0;
 
 // Les recu par comm
@@ -109,20 +110,20 @@ void actu_angle(position& pos){
       double r= (dist*(vit2+vit1))/(2*(vit2-vit1));
       cx= pos.x - (r*cos(pos.angle));
       cy= pos.y - (r*sin(pos.angle));
-      Serial.println("vitang");
-      Serial.println(vitang);
-      Serial.println("dep1");
-      Serial.println(dep1);
-      Serial.println("dep2");
-      Serial.println(dep2);
-      Serial.println("vit1");
-      Serial.println(vit1);
-      Serial.println("vit2");
-      Serial.println(vit2);
+    //   Serial.println("vitang");
+    //   Serial.println(vitang);
+    //   Serial.println("dep1");
+    //   Serial.println(dep1);
+    //   Serial.println("dep2");
+    //   Serial.println(dep2);
+    //   Serial.println("vit1");
+    //   Serial.println(vit1);
+    //   Serial.println("vit2");
+    //   Serial.println(vit2);
     //   Serial.println("rayon :");
     //   Serial.println(r);
-      Serial.println("angle:");
-      Serial.println(pos.angle);
+    //   Serial.println("angle:");
+    //   Serial.println(pos.angle);
     //   Serial.println("centre x:");
     //   Serial.println(cx);
     //   Serial.println("centre y:");
@@ -131,22 +132,25 @@ void actu_angle(position& pos){
 //     Serial.println(dep1);
 //           Serial.println("dep2");
 //     Serial.println(dep2);
-  Serial.println("temps");
-  Serial.println(temps);
-  Serial.println("tempsPrec");
-  Serial.println(temps_prec);
+//   Serial.println("temps");
+//   Serial.println(temps);
+//   Serial.println("tempsPrec");
+//   Serial.println(temps_prec);
 //     Serial.println("millis");
 //   Serial.println(millis());
     pos.angle-=vitang*(temps-temps_prec);  
 
     pos.x = cx + (r*cos(pos.angle));
     pos.y = cy + (r*sin(pos.angle));
+
+positionX=(cx + (r*cos(pos.angle))+184);
+positionY=(cy + (r*sin(pos.angle))+20);
   
     temps_prec=temps;
     encoder_prec1=ENCODER_Read(0);
     encoder_prec2=ENCODER_Read(1);
-    Serial.println(pos.x);
-    Serial.println(pos.y);
+    // Serial.println(pos.x);
+    // Serial.println(pos.y);
   }
 }
 
@@ -179,14 +183,11 @@ void loop()
 {
     while (1)
     {
-                  setEtatJeu(); // AVANT DEL BONUS
+              setEtatJeu(); // AVANT DEL BONUS
 
         //if (millis()-cooldown>0){actu_angle(robot);cooldown+=1;}
         actu_angle(robot);
-        if(litUART1(listeGarfield, 4))
-        {
-            envoieTrameUART1(listeLasagne);
-        }
+
         if (litUART2(manette, 6))
         {
             // Serial.print(manette[0]);
@@ -206,12 +207,15 @@ void loop()
         bananeJaune();
         malusRouge();
         gelBleu();
-
+            creationListe();
+        if(litUART1(listeGarfield, 4))
+        {
+            envoieTrameUART1(listeLasagne);
+         }
           flagBumperSet();
         delBonus(); // APRES ETAT JEU
 
-          creationListe();
-          receptionListe();
+                receptionListe();
     }
 }
 /*******************************************************************************************
@@ -223,8 +227,6 @@ void loop()
  ******************************************************************************************/
 void creationListe()
 {
-    positionX=int round(robot.x);
-    positionY=int round(robot.y);
     listeLasagne[0] = positionX;
     listeLasagne[1] = positionY;
     listeLasagne[2] = flagBleu;
@@ -265,19 +267,15 @@ void setEtatJeu()
         etatJeu = 1;
         debutJeu = millis();
     }
-    if ((positionX != 0 || positionY != 0) && flagBumper == 0)
+    if (etatJeu==1 && flagBumper == 0)
     {
         etatJeu = 1;
     }
-    if ((positionX != 0 || positionY != 0) && flagBumper == 1)
-    {
-        etatJeu = 2;
-    }
-    if ((positionX != 0 || positionY != 0) && flagBumper == 1 && etatJeuRecu == 2)
+    if (etatJeu==1 && flagBumper == 1)
     {
         etatJeu = 3;
     }
-    if (millis() - debutJeu > 60000)
+      if (millis() - debutJeu > 60000)
     {
         etatJeu = 3;
     }
@@ -340,7 +338,9 @@ void bonusVert()
  *
  * Pas de return mais joue sur la variable globale flagJaune et les clockN et clockJ
  ******************************************************************************************/
-void bananeJaune()
+
+float angleInitial=0;
+ void bananeJaune()
 {
     clockN = millis();
 
@@ -349,8 +349,10 @@ void bananeJaune()
         flagJaune = 1;
         while (flagJaune == 1)
         {
+            angleInitial=robot.angle;
             digitalWrite(LED_JAUNE, LOW);
-            tourne(762, 0.4, DROITE);
+            while(robot.angle-angleInitial<(2*PI)){actu_angle;vitesseRoues(0.2,-0.2);}
+            vitesseRoues(0,0);
             digitalWrite(LED_JAUNE, HIGH);
             flagJaune = 0;
             clockJ = millis();
@@ -383,16 +385,10 @@ void gelBleu()
     if (couleur == COULEURBLEU && (clockN - clockB > 10000 || clockB == 0))
     { // Cooldown
         flagBleu = 1;
-        digitalWrite(LED_BLEUE, LOW);
         clockB = millis();
     }
 
-    if (flagBleuRecu == 1)
-    {
-        digitalWrite(LED_BLEUE, LOW);
-        delay(5000);
-        digitalWrite(LED_BLEUE, HIGH);
-    }
+    if (flagBleuRecu==1&&millis()-tempsBleu>10000){digitalWrite(LED_BLEUE,LOW);vitesseRoues(0,0);delay(5000);(LED_BLEUE,HIGH);tempsBleu=millis();}
 }
 
 /*******************************************************************************************
@@ -430,7 +426,7 @@ void delBonus()
         digitalWrite(LED_JAUNE, LOW);
         while (true)
         {
-            delay(10);
+           vitesseRoues(0,0); delay(10);
         }
     }
 }

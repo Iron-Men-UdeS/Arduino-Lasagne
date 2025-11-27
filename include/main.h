@@ -17,9 +17,9 @@ struct position{
 };
 
 //define
-#define maxSpeedAvance 0.5
+#define maxSpeedAvance 0.4
 #define maxSpeedRecule 0.5
-#define maxSpeedVert 0.7
-#define maxSpeedRouge 0.3
+#define maxSpeedVert 0.6
+#define maxSpeedRouge 0.2
 
 #endif 
