@@ -9,7 +9,7 @@ Date: 11/13/2025
 Inclure les librairies de functions que vous voulez utiliser
 **************************************************************************** */
 #include "main.h"
-//#include "Capteurs.h"
+#include "Capteurs.h"
 /* ****************************************************************************
 Fonctions d'initialisation (setup)
 **************************************************************************** */
@@ -170,39 +170,34 @@ void loop()
 
         //if (millis()-cooldown>0){actu_angle(robot);cooldown+=1;}
         actu_angle(robot);
-        // if(litUART1(listeGarfield, 4))
-        // {
-        //     envoieTrameUART1(listeLasagne);
-        // }
+        if(litUART1(listeGarfield, 4))
+        {
+            envoieTrameUART1(listeLasagne);
+        }
         if (litUART2(manette, 6))
         {
-            // Serial.print(manette[0]);
-            // Serial.print(manette[1]);
-            // Serial.print(manette[2]);
-            // Serial.print(manette[3]);
-            // Serial.println(manette[4]);
             deplacementmanette();
         }
 
-        // if ((millis() - test) >= 500)
-        // {
-        //     test = millis();
-        //     couleur = detectCouleur();
-        // }
+        if ((millis() - test) >= 500)
+        {
+            test = millis();
+            couleur = detectCouleur();
+        }
         // Serial.print(couleur);
-        // bonusVert();
+        bonusVert();
         // Serial.print(flagVert);
         // Serial.print(flagRouge);
-        // bananeJaune();
-        // malusRouge();
-        // gelBleu();
+        bananeJaune();
+        malusRouge();
+        gelBleu();
 
-        //   flagBumperSet();
-        //   setEtatJeu(); // AVANT DEL BONUS
+          flagBumperSet();
+          setEtatJeu(); // AVANT DEL BONUS
         // delBonus(); // APRES ETAT JEU
 
-        //   creationListe();
-        //   receptionListe();
+          creationListe();
+          receptionListe();
     }
 }
 
