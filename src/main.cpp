@@ -61,8 +61,8 @@ unsigned long debutJeu = 0;
 int cooldown = 0;
 
 // Flags simulant les données du mvmnt
-double positionX = 0;
-double positionY = 0;
+int positionX = 100;
+int positionY = 0;
 
 // Les recu par comm
 int flagBleuRecu = 0;
@@ -85,8 +85,8 @@ double cx=0;
 double cy=0;
 double dep1=0;
 double dep2=0;
-int encoder_prec1=0;
-int encoder_prec2=0;
+    int encoder_prec1=0;
+    int encoder_prec2=0;
 
 
 
@@ -179,13 +179,14 @@ void loop()
 {
     while (1)
     {
+                  setEtatJeu(); // AVANT DEL BONUS
 
         //if (millis()-cooldown>0){actu_angle(robot);cooldown+=1;}
         actu_angle(robot);
-        // if(litUART1(listeGarfield, 4))
-        // {
-        //     envoieTrameUART1(listeLasagne);
-        // }
+        if(litUART1(listeGarfield, 4))
+        {
+            envoieTrameUART1(listeLasagne);
+        }
         if (litUART2(manette, 6))
         {
             // Serial.print(manette[0]);
@@ -196,25 +197,21 @@ void loop()
             deplacementmanette();
         }
 
-        // if ((millis() - test) >= 500)
-        // {
-        //     test = millis();
-        //     couleur = detectCouleur();
-        // }
-        // Serial.print(couleur);
-        // bonusVert();
-        // Serial.print(flagVert);
-        // Serial.print(flagRouge);
-        // bananeJaune();
-        // malusRouge();
-        // gelBleu();
+        if ((millis() - test) >= 500)
+        {
+            test = millis();
+            couleur = detectCouleur();
+        }
+        bonusVert();
+        bananeJaune();
+        malusRouge();
+        gelBleu();
 
-        //   flagBumperSet();
-        //   setEtatJeu(); // AVANT DEL BONUS
-        // delBonus(); // APRES ETAT JEU
+          flagBumperSet();
+        delBonus(); // APRES ETAT JEU
 
-        //   creationListe();
-        //   receptionListe();
+          creationListe();
+          receptionListe();
     }
 }
 /*******************************************************************************************
@@ -226,6 +223,8 @@ void loop()
  ******************************************************************************************/
 void creationListe()
 {
+    positionX=int round(robot.x);
+    positionY=int round(robot.y);
     listeLasagne[0] = positionX;
     listeLasagne[1] = positionY;
     listeLasagne[2] = flagBleu;
