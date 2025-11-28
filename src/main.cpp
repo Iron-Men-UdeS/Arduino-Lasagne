@@ -206,13 +206,13 @@ void loop()
         bonusVert();
         bananeJaune();
         malusRouge();
-        gelBleu();
+        //gelBleu();
             creationListe();
         if(litUART1(listeGarfield, 4))
         {
             envoieTrameUART1(listeLasagne);
          }
-          flagBumperSet();
+        //  flagBumperSet();
         delBonus(); // APRES ETAT JEU
 
                 receptionListe();
@@ -275,7 +275,7 @@ void setEtatJeu()
     {
         etatJeu = 3;
     }
-      if (millis() - debutJeu > 60000)
+      if (millis() - debutJeu > 30000)
     {
         etatJeu = 3;
     }
@@ -430,7 +430,7 @@ void delBonus()
            vitesseRoues(0,0); delay(10);  if(litUART1(listeGarfield, 4))
         {
             envoieTrameUART1(listeLasagne);
-         }
+         }  
         }
     }
 }
@@ -445,22 +445,22 @@ void delBonus()
 void flagBumperSet()
 { 
     bool bumpp = false;
-    if (ROBUS_IsBumper(0))
-    {
-        bumpp = true;
-    }
+    //if (ROBUS_IsBumper(0))
+    //{
+    //    bumpp = true;
+    //}
     if (ROBUS_IsBumper(1))
     {
         bumpp = true;
     }
-    if (ROBUS_IsBumper(2))
+    //if (ROBUS_IsBumper(2))
     {
         bumpp = true;
     }
-    if (ROBUS_IsBumper(3))
-    {
-        bumpp = true;
-    }
+    //if (ROBUS_IsBumper(3))
+    //{
+    //    bumpp = true;
+    //}
     if (bumpp)
     {
         flagBumper = 1;
