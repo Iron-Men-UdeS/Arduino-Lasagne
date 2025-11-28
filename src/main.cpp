@@ -262,7 +262,7 @@ void receptionListe()
  ******************************************************************************************/
 void setEtatJeu()
 {
-    if ((positionX != 0 || positionY != 0) && flagBumper == 0 && debutJeu == 0)
+    if ((positionX != 0 || positionY != 0) && debutJeu == 0)
     {
         etatJeu = 1;
         debutJeu = millis();
@@ -351,7 +351,8 @@ float angleInitial=0;
         {
             angleInitial=robot.angle;
             digitalWrite(LED_JAUNE, LOW);
-            while(robot.angle-angleInitial<(2*PI)){actu_angle;vitesseRoues(0.2,-0.2);}
+            vitesseRoues(0.2,-0.2);
+            delay(1000);
             vitesseRoues(0,0);
             digitalWrite(LED_JAUNE, HIGH);
             flagJaune = 0;
@@ -426,7 +427,10 @@ void delBonus()
         digitalWrite(LED_JAUNE, LOW);
         while (true)
         {
-           vitesseRoues(0,0); delay(10);
+           vitesseRoues(0,0); delay(10);  if(litUART1(listeGarfield, 4))
+        {
+            envoieTrameUART1(listeLasagne);
+         }
         }
     }
 }
